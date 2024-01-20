@@ -11,7 +11,7 @@ import {
 
 const image = require('../../components/other/image3.jpg');
 
-export const Login_page = () => {
+export const Login_page = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -27,7 +27,7 @@ export const Login_page = () => {
 
     if (user) {
       Alert.alert('Login Successful', 'Welcome back!');
-      //navigation.navigate('Main_page');
+      props.navigation.navigate('Main');
     } else {
       Alert.alert(
         'Login Failed',
@@ -69,7 +69,7 @@ export const Login_page = () => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Sign Up</Text>
+              <Text style={styles.buttonText} onPress={()=>props.navigation.navigate('Signup')}>Sign Up</Text>
             </TouchableOpacity>
           </View>
         </View>
