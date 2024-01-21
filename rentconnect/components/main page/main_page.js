@@ -13,7 +13,9 @@ export const Main_page = () => {
     <View style={styles.container}>
       
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-        <Text>Main Page...</Text>
+
+
+
       </ImageBackground>
     </View>
   );

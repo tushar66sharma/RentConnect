@@ -27,7 +27,9 @@ export const Login_page = props => {
 
     if (user) {
       Alert.alert('Login Successful', 'Welcome back!');
-      props.navigation.navigate('Main');
+      props.navigation.navigate('Root');
+      setEmail('');
+      setPassword('');
     } else {
       Alert.alert(
         'Login Failed',
