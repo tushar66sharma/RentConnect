@@ -8,7 +8,7 @@ import {enableScreens} from 'react-native-screens';
 import {Main_page} from './components/main page/main_page.js';
 import {Signup} from './components/signup.js/signup.js';
 import {Settings} from './components/drawer pages/setting.js';
-import {Mycart} from './components/drawer pages/mycart.js';
+import {Mycart} from './components/drawer pages/mycart/mycart.js';
 import {Notification} from './components/drawer pages/notifications.js';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 const Drawer = createDrawerNavigator();

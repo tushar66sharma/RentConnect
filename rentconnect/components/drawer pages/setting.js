@@ -9,7 +9,11 @@ export const Settings = () => {
       <ImageBackground
         source={image}
         resizeMode="cover"
-        style={styles.image}></ImageBackground>
+        style={styles.image}>
+          <View style={styles.innerbox1}>
+          <Text style={styles.text}>Settings Screen</Text>
+        </View>
+        </ImageBackground>
     </View>
   );
 };
@@ -22,4 +26,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  innerbox1: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  text: {
+    fontSize: 40,
+    color: 'white',
+  },
+
 });

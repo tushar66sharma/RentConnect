@@ -4,11 +4,12 @@ const image = require('../../components/other/image3.jpg');
 
 export const Notification = () => {
   return (
-    <View style={styles.container}> 
-      <ImageBackground
-        source={image}
-        resizeMode="cover"
-        style={styles.image}></ImageBackground>
+    <View style={styles.container}>
+      <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+        <View style={styles.innerbox1}>
+          <Text style={styles.text}>Notification Screen</Text>
+        </View>
+      </ImageBackground>
     </View>
   );
 };
@@ -20,5 +21,14 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+  },
+  innerbox1: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  text: {
+    fontSize: 40,
+    color: 'white',
   },
 });
