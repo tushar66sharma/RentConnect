@@ -1,17 +1,97 @@
 import React, {useState} from 'react';
-import {ImageBackground, StyleSheet, Text, View} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Image,
+  ImageBackground,
+  ImageSourcePropType,
+  ScrollView,
+} from 'react-native';
+import {CustomCard} from '../cards/main_page_cards';
+
 const image = require('../../components/other/image3.jpg');
+
+export const cardsData = [
+  {
+    title: '₹500',
+    content: 'Laptop charger adapter 4.5mm for HP Pavilion',
+    imageSource: require('../../components/cards/assets/charger.jpg'),
+  },
+  {
+    title: '₹53,000',
+    content: 'HP intel i5,11th gen',
+    imageSource: require('../../components/cards/assets/laptop.jpg'),
+  },
+  {
+    title: '₹500',
+    content: 'Berlin Cylce',
+    imageSource: require('../../components/cards/assets/cycle.jpg'),
+  },
+  {
+    title: '₹500',
+    content: 'Vomero 17 Men running shoes',
+    imageSource: require('../../components/cards/assets/shoes.jpg'),
+  },
+  {
+    title: '₹ 335',
+    content: 'Griffiths',
+    imageSource: require('../../components/cards/assets/book.jpg'),
+  },
+  {
+    title: '₹ 50',
+    content: 'Parcetamol 50mg',
+    imageSource: require('../../components/cards/assets/medicines.jpg'),
+  },
+  {
+    title: '₹ 150',
+    content: 'Umbrella',
+    imageSource: require('../../components/cards/assets/umbrella.jpg'),
+  },
+  {
+    title: '₹800',
+    content: 'Canon Powershot SX70 20.3MP Digital Camera 65x Optical Zoom Lens',
+    imageSource: require('../../components/cards/assets/camera.jpg'),
+  },
+  {
+    title: '₹400',
+    content: 'Lamp',
+    imageSource: require('../../components/cards/assets/lamp.jpg'),
+  },
+  {
+    title: '₹150',
+    content: 'MiniDrafter',
+    imageSource: require('../../components/cards/assets/drafter.jpg'),
+  },
+  {
+    title: '₹150',
+    content: 'MiniDrafter',
+    imageSource: require('../../components/cards/assets/drafter.jpg'),
+  },
+  {
+    title: '₹400',
+    content: 'Lamp',
+    imageSource: require('../../components/cards/assets/lamp.jpg'),
+  },
+];
 
 export const Main_page = () => {
   return (
     <View style={styles.container}>
-      
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-      <View style={styles.innerbox1}>
-          <Text style={styles.text}>Main Screen</Text>
+        <View style={styles.row}>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            {cardsData.map((card, index) => (
+              <CustomCard
+                key={index}
+                title={card.title}
+                content={card.content}
+                imageSource={card.imageSource}
+              />
+            ))}
+          </ScrollView>
         </View>
-
-
       </ImageBackground>
     </View>
   );
@@ -33,5 +113,31 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 40,
     color: 'white',
+  },
+  whiteBox: {
+    backgroundColor: 'white',
+    borderRadius: 0,
+    padding: 10,
+    paddingTop: 15,
+    paddingBottom: 15,
+    width: '95%',
+    maxWidth: 600,
+    // maxHeight:'80%',
+    marginBottom: 50,
+    flex: 1,
+    opacity: 1,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    // flexWrap:'wrap',
+    // width: '100%',
+    //padding: 6,
+  },
+  scrollContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
   },
 });
