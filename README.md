@@ -17,3 +17,4 @@ npm install @react-navigation/drawer
 npm install @react-navigation/material-bottom-tabs react-native-paper react-native-vector-icons
 npm install @expo/vector-icons
 npm install @mdi/react @mdi/js
+npm install --save react-native-vector-icons
