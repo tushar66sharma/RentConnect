@@ -1,11 +1,14 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import { ImageBackground, StyleSheet, View,Image } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { Sale } from './sale';
 import { Rent } from './rent';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Import an icon library
 
+
 const image = require('../../../components/other/image3.jpg');
+const saleImage=require('../../../components/other/sale_image2.png');
+const cartImage=require('../../../components/other/rent_image.png');
 const Tab = createMaterialBottomTabNavigator();
 
 export const Mycart = () => {
@@ -15,8 +18,8 @@ export const Mycart = () => {
         <Tab.Navigator
           barStyle={{ backgroundColor: 'black' }}
           activeColor="white"
-          inactiveColor="gray"
-          shifting={true}
+          // inactiveColor="gray"
+          // shifting={true}
         >
           <Tab.Screen
             name="Sale"
@@ -24,7 +27,7 @@ export const Mycart = () => {
             options={{
               tabBarLabel: 'Sale',
               tabBarIcon: ({ color }) => (
-                <Icon name="sale" color={color} size={18} />
+                <Image source={saleImage} style={styles.saleimage}/>
               ),
             }}
           />
@@ -32,9 +35,9 @@ export const Mycart = () => {
             name="Rent"
             component={Rent}
             options={{
-              tabBarLabel: 'Rent',
+              tabBarLabel: 'Cart',
               tabBarIcon: ({ color }) => (
-                <Icon name="home" color={color} size={18} />
+                <Image source={cartImage} style={styles.cartimage}/>
               ),
             }}
           />
@@ -52,4 +55,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  saleimage:{
+    height:35,
+    width:40,
+    position:'absolute',
+    bottom:0,
+  },
+  cartimage:{
+    height:30,
+    width:40,
+    position:'absolute',
+    bottom:0,
+  },
+
 });

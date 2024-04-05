@@ -8,12 +8,14 @@ import {
   ImageBackground,
   ImageSourcePropType,
   ScrollView,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
-
 
 interface CustomCardProps {
   title: string;
   content: string;
+  flag:boolean;
   //children?: ReactNode;
   cardStyle?: object;
   imageSource?: ImageSourcePropType;
@@ -22,9 +24,37 @@ interface CustomCardProps {
 export const CustomCard: React.FC<CustomCardProps> = ({
   title,
   content,
+  flag,
   cardStyle = {},
   imageSource,
 }) => {
+  const handleView = () => {
+    Alert.alert("Order placed...");
+  };
+
+  const renderTextInput = () => {
+    if (flag) {
+      return (
+        <TextInput
+          style={[styles.input, {backgroundColor: '#3cb371'}]}
+          placeholder="Available"
+          editable={false}
+          placeholderTextColor="#000000"
+        />
+      );
+    } else {
+      return (
+        <TextInput
+          style={[styles.input, {backgroundColor: '#ff6347'}]}
+          placeholder="Unavailable"
+          editable={false}
+          placeholderTextColor="#000000"
+        />
+      );
+    }
+  };
+
+
   return (
     <View style={[styles.card, cardStyle]}>
       {imageSource && (
@@ -40,6 +70,14 @@ export const CustomCard: React.FC<CustomCardProps> = ({
         <Text style={styles.title}>{title}</Text>
         <View style={styles.divider} />
         <Text>{content}</Text>
+      </View>
+      <View style={styles.box2}>
+        {renderTextInput()}
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText} onPress={handleView}>
+            Order
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -75,9 +113,7 @@ const styles = StyleSheet.create({
     height: 40,
     color: 'white',
   },
-  
-  
- 
+
   card: {
     width: '48%',
     // flex: 1,
@@ -91,7 +127,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     //marginLeft:1,
     maxWidth: 200,
-    height: 235,
+    height: 330,
     backgroundColor: 'white',
     alignItems: 'center',
   },
@@ -119,5 +155,53 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
     marginBottom: 8,
+  },
+  input: {
+    height: 35,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 5,
+    width:150,
+    backgroundColor: '#3cb371',
+    shadowColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    textAlign: 'center',
+    fontSize:20,
+    fontWeight:'bold',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    // marginLeft: 3,
+    // marginRight: 3,
+    marginBottom:5,
+  },
+  
+  button: {
+    backgroundColor: '#0000cd',
+    height:35,
+    padding: 5,
+    width: 150,
+    // marginTop: 5,
+    borderRadius: 5,
+    // marginLeft:5,
+    // marginRight: 5,
+    // marginBottom: 5,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  box2: {
+    marginTop: 5,
+    marginBottom: 5,
   },
 });

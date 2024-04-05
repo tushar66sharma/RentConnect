@@ -11,6 +11,7 @@ import {Settings} from './components/drawer pages/setting.js';
 import {Mycart} from './components/drawer pages/mycart/mycart.js';
 import {Notification} from './components/drawer pages/notifications.js';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import {Upload} from './components/upload_item/upload_page.js';
 const Drawer = createDrawerNavigator();
 
 enableScreens();
@@ -40,6 +41,7 @@ export function Root() {
           },
         }}
       />
+
       <Drawer.Screen
         name="Mycart"
         component={Mycart}
@@ -77,6 +79,7 @@ export function Root() {
         }}
       />
     </Drawer.Navigator>
+    
   );
 }
 
@@ -115,6 +118,18 @@ function App(): React.JSX.Element {
           <Stack.Screen
             name="Signup"
             component={Signup}
+            options={{
+              headerStyle: {
+                backgroundColor: '#0000cd',
+              },
+              headerTitleStyle: {
+                color: 'white', // Set the desired text color
+              },
+            }}
+          />
+          <Stack.Screen
+            name="Upload"
+            component={Upload}
             options={{
               headerStyle: {
                 backgroundColor: '#0000cd',

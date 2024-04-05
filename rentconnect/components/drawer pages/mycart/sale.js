@@ -18,61 +18,73 @@ export const cardsData = [
     title: '₹500',
     content: 'Laptop charger adapter 4.5mm for HP Pavilion',
     imageSource: require('../../../components/cards/assets/charger.jpg'),
+    flag:true,
   },
   {
     title: '₹53,000',
     content: 'HP intel i5,11th gen',
     imageSource: require('../../../components/cards/assets/laptop.jpg'),
+    flag:true,
   },
   {
     title: '₹500',
     content: 'Berlin Cylce',
     imageSource: require('../../../components/cards/assets/cycle.jpg'),
+    flag:false,
   },
   {
     title: '₹500',
     content: 'Vomero 17 Men running shoes',
     imageSource: require('../../../components/cards/assets/shoes.jpg'),
+    flag:false,
   },
   {
     title: '₹ 335',
     content: 'Griffiths',
     imageSource: require('../../../components/cards/assets/book.jpg'),
+    flag:true,
   },
   {
     title: '₹ 50',
     content: 'Parcetamol 50mg',
     imageSource: require('../../../components/cards/assets/medicines.jpg'),
+    flag:false,
   },
   {
     title: '₹ 150',
     content: 'Umbrella',
     imageSource: require('../../../components/cards/assets/umbrella.jpg'),
+    flag:true,
   },
   {
     title: '₹800',
     content: 'Canon Powershot SX70 20.3MP Digital Camera 65x Optical Zoom Lens',
     imageSource: require('../../../components/cards/assets/camera.jpg'),
+    flag:true,
   },
   {
     title: '₹400',
     content: 'Lamp',
     imageSource: require('../../../components/cards/assets/lamp.jpg'),
+    flag:false,
   },
   {
     title: '₹150',
     content: 'MiniDrafter',
     imageSource: require('../../../components/cards/assets/drafter.jpg'),
+    flag:true,
   },
   {
     title: '₹150',
     content: 'MiniDrafter',
     imageSource: require('../../../components/cards/assets/drafter.jpg'),
+    flag:true,
   },
   {
     title: '₹400',
     content: 'Lamp',
     imageSource: require('../../../components/cards/assets/lamp.jpg'),
+    flag:true,
   },
 ];
 export const Sale = () => {
@@ -87,6 +99,7 @@ export const Sale = () => {
                 title={card.title}
                 content={card.content}
                 imageSource={card.imageSource}
+                flag={card.flag}
               />
             ))}
           </ScrollView>
