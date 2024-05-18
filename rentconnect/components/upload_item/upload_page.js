@@ -1,5 +1,5 @@
 import React from 'react';
-import {ImageBackground, StyleSheet, Text, View} from 'react-native';
+import {ImageBackground, StyleSheet, Text, View,Image} from 'react-native';
 const image = require('../../components/other/image3.jpg');
 
 export const Upload = () => {
@@ -8,6 +8,7 @@ export const Upload = () => {
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
         <View style={styles.innerbox1}>
           <Text style={styles.text}>Uplaod Item Screen</Text>
+          {/* <Image source={image} style={styles.searchimage} /> */}
         </View>
       </ImageBackground>
     </View>
@@ -31,4 +32,13 @@ const styles = StyleSheet.create({
     fontSize: 40,
     color: 'white',
   },
+  searchimage:{
+    
+    height:35,
+    width:40,
+    position:'absolute',
+    left:25,
+    top:25,
+    backgroundColor:'white',
+}
 });

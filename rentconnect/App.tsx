@@ -54,7 +54,7 @@ export function Root() {
           },
         }}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="Notification"
         component={Notification}
         options={{
@@ -65,7 +65,7 @@ export function Root() {
             color: 'white', // Set the desired text color
           },
         }}
-      />
+      /> */}
       <Drawer.Screen
         name="Settings"
         component={Settings}

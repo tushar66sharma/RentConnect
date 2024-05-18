@@ -27,7 +27,7 @@ export const Login_page = props => {
 
     if (user) {
       Alert.alert('Login Successful', 'Welcome back!');
-      props.navigation.navigate('Root');
+      props.navigation.navigate('Root',{email});
       setEmail('');
       setPassword('');
     } else {
