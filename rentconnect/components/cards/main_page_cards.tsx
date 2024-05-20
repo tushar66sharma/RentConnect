@@ -19,6 +19,7 @@ interface CustomCardProps {
   //children?: ReactNode;
   cardStyle?: object;
   imageSource?: ImageSourcePropType;
+  email:string;
 }
 
 export const CustomCard: React.FC<CustomCardProps> = ({
@@ -27,9 +28,10 @@ export const CustomCard: React.FC<CustomCardProps> = ({
   flag,
   cardStyle = {},
   imageSource,
+  email,
 }) => {
   const handleView = () => {
-    Alert.alert("Order placed...");
+    Alert.alert(`Order placed...${email}`);
   };
 
   const renderTextInput = () => {

@@ -12,12 +12,17 @@ import {Mycart} from './components/drawer pages/mycart/mycart.js';
 import {Notification} from './components/drawer pages/notifications.js';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {Upload} from './components/upload_item/upload_page.js';
+
 const Drawer = createDrawerNavigator();
 
 enableScreens();
 const Stack = createNativeStackNavigator();
 
-export function Root() {
+
+
+
+export function Root({route}:any) {
+  const {email} =route.params;
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -32,6 +37,7 @@ export function Root() {
       <Drawer.Screen
         name="Main"
         component={Main_page}
+        initialParams={{email}} //paasing the email as prop to the main_page
         options={{
           headerStyle: {
             backgroundColor: '#0000cd',
@@ -69,6 +75,7 @@ export function Root() {
       <Drawer.Screen
         name="Settings"
         component={Settings}
+        initialParams={{email}}
         options={{
           headerStyle: {
             backgroundColor: '#0000cd',

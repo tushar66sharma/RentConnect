@@ -11,7 +11,7 @@ import {
 
 const image = require('../../components/other/image3.jpg');
 
-export const Login_page = props => {
+export const Login_page = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -26,7 +26,7 @@ export const Login_page = props => {
     );
 
     if (user) {
-      Alert.alert('Login Successful', 'Welcome back!');
+      Alert.alert('Login Successful', `Welcome back! ${email}`);
       props.navigation.navigate('Root',{email});
       setEmail('');
       setPassword('');

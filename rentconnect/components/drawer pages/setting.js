@@ -7,15 +7,16 @@ import {
   Text,
   TouchableOpacity,
   Switch,
-  Image,
-  ImageBackground
+  Image, 
+  ImageBackground,
+  Alert
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 const image = require('../../components/other/image3.jpg');
 const image1 = require('../../components/other/user_icon.jpg');
 
-export const  Settings = () => {
-  // const { email } = Root.params;
+export const  Settings = ({route}) => {
+  const {email} = route.params;
   const [form, setForm] = useState({
     emailNotifications: true,
     pushNotifications: false,
@@ -46,7 +47,7 @@ export const  Settings = () => {
 
             
 
-            <Text style={styles.profileEmail}>xyz</Text>
+            <Text style={styles.profileName}>{email}</Text>
 
             <TouchableOpacity
               onPress={() => {

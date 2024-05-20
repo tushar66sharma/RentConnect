@@ -92,13 +92,15 @@ export const cardsData = [
   },
 ];
 
-export const Main_page = () => {
+export const Main_page = ({route}) => {
+
+  const {email}=route.params;
   const navigation = useNavigation();
 
   SampleFunction = () => {
     // Write your own code here, Which you want to execute on Floating Button Click Event.
-    Alert.alert('Floating Button Clicked');
-    navigation.navigate('Upload');
+    Alert.alert(`Floating Button Clicked ${email}`);
+    navigation.navigate('Upload',{email});
   };
 
   return (
@@ -113,6 +115,7 @@ export const Main_page = () => {
                 content={card.content}
                 imageSource={card.imageSource}
                 flag={card.flag}
+                email={email}
               />
             ))}
           </ScrollView>
