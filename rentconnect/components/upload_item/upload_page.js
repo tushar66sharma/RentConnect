@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View, TextInput, Image, TouchableOpacity } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, TextInput, Image, TouchableOpacity,ScrollView } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 const image = require('../../components/other/image3.jpg');
+import { useNavigation } from '@react-navigation/native';
 
 export const Upload = () => {
+  const navtigation= useNavigation();
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [imageUri, setImageUri] = useState(null);
+  const [category,setcategory] =useState('');
+  const [note,setnote] =useState('');
 
   const handleUpload = () => {
     // Logic for handling the upload goes here
     console.log('Item Description:', description);
     console.log('Item Price:', price);
+    console.log('Category:',category);
     console.log('Image URI:', imageUri);
+    navtigation.navigate('Main');
+
   };
 
   const selectImage = () => {
@@ -40,6 +47,7 @@ export const Upload = () => {
   return (
     <View style={styles.container}>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+        <ScrollView>
         <View style={styles.innerbox1}>
           <Text style={styles.text}>Upload Your Item</Text>
           <TextInput
@@ -48,6 +56,20 @@ export const Upload = () => {
             placeholderTextColor="#aaa"
             value={description}
             onChangeText={setDescription}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Category"
+            placeholderTextColor="#aaa"
+            value={category}
+            onChangeText={setcategory}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Important note"
+            placeholderTextColor="#aaa"
+            value={note}
+            onChangeText={setnote}
           />
           <TextInput
             style={styles.input}
@@ -69,9 +91,10 @@ export const Upload = () => {
             </View>
           )}
           <TouchableOpacity style={styles.button} onPress={handleUpload}>
-            <Text style={styles.buttonText}>Upload</Text>
+            <Text style={styles.buttonText} >Upload</Text>
           </TouchableOpacity>
         </View>
+        </ScrollView>
       </ImageBackground>
     </View>
   );
@@ -88,7 +111,7 @@ const styles = StyleSheet.create({
   innerbox1: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'black',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 20,
     opacity: 1,
   },

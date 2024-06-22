@@ -7,11 +7,13 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/native';
 
 const image = require('../../components/other/image3.jpg');
 
 export const Signup = () => {
+  const navigation = useNavigation();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -20,33 +22,50 @@ export const Signup = () => {
     rollNo: '',
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleInputChange = (field, text) => {
-    setFormData(prevData => ({...prevData, [field]: text}));
+    setFormData(prevData => ({ ...prevData, [field]: text }));
+    setErrors(prevErrors => ({ ...prevErrors, [field]: '' })); // Clear error for the field on change
   };
 
   const handleSubmission = () => {
     // Access the values from formData object
     const {email, password, name, mobileNo, rollNo} = formData;
 
-    // Validate or process the data as needed
+    const newErrors = {};
+    if (!email) newErrors.email = 'Email is required';
+    if (!password) newErrors.password = 'Password is required';
+    if (!name) newErrors.name = 'Name is required';
+    if (!mobileNo) newErrors.mobileNo = 'Mobile No. is required';
+    if (!rollNo) newErrors.rollNo = 'Roll No. is required';
 
-    // Temporary array to store the form data
-    const formDataArray = [
-      {field: 'Email', value: email},
-      {field: 'Password', value: password},
-      {field: 'Name', value: name},
-      {field: 'Mobile No.', value: mobileNo},
-      {field: 'Roll No.', value: rollNo},
-    ];
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+    } else {
+      // Process the data as needed
 
-    // Log the data for testing purposes
-    console.log('Form Data Array:', formDataArray);
+      // Temporary array to store the form data
+      const formDataArray = [
+        { field: 'Email', value: email },
+        { field: 'Password', value: password },
+        { field: 'Name', value: name },
+        { field: 'Mobile No.', value: mobileNo },
+        { field: 'Roll No.', value: rollNo },
+      ];
+
+
+      // Log the data for testing purposes
+      console.log('Form Data Array:', formDataArray);
+      navigation.navigate('Login');
+    }
   };
 
   return (
+    <GestureHandlerRootView>
     <View style={styles.container}>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-        
+        <ScrollView style={styles.scrollcontainer}>
           <View style={styles.outerbox}>
             <Text style={styles.textinsidebox}>Email</Text>
             <TextInput
@@ -55,6 +74,7 @@ export const Signup = () => {
               value={formData.email}
               onChangeText={text => handleInputChange('email', text)}
             />
+            {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
             <Text style={styles.textinsidebox}>Password</Text>
             <TextInput
               style={styles.input}
@@ -63,6 +83,7 @@ export const Signup = () => {
               value={formData.password}
               onChangeText={text => handleInputChange('password', text)}
             />
+            {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
             <Text style={styles.textinsidebox}>Name</Text>
             <TextInput
               style={styles.input}
@@ -70,6 +91,7 @@ export const Signup = () => {
               value={formData.name}
               onChangeText={text => handleInputChange('name', text)}
             />
+            {errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
             <Text style={styles.textinsidebox}>Mobile No.</Text>
             <TextInput
               style={styles.input}
@@ -77,6 +99,7 @@ export const Signup = () => {
               value={formData.mobileNo}
               onChangeText={text => handleInputChange('mobileNo', text)}
             />
+            {errors.mobileNo ? <Text style={styles.errorText}>{errors.mobileNo}</Text> : null}
             <Text style={styles.textinsidebox}>Roll No.</Text>
             <TextInput
               style={styles.input}
@@ -84,6 +107,7 @@ export const Signup = () => {
               value={formData.rollNo}
               onChangeText={text => handleInputChange('rollNo', text)}
             />
+            {errors.rollNo ? <Text style={styles.errorText}>{errors.rollNo}</Text> : null}
 
             <View style={styles.box2}>
               <TouchableOpacity
@@ -93,8 +117,10 @@ export const Signup = () => {
               </TouchableOpacity>
             </View>
           </View>
+          </ScrollView>
       </ImageBackground>
     </View>
+    </GestureHandlerRootView>
   );
 };
 
@@ -106,12 +132,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  scrollcontainer:{
+    marginTop:50,
+
+  },
   outerbox: {
     backgroundColor: 'white',
     marginLeft: 25,
     marginRight: 25,
     borderRadius: 20,
     borderColor: "'rgba(0, 0, 1)'",
+    
   },
   textinsidebox: {
     fontSize: 20,
