@@ -13,6 +13,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {CustomCard} from '../cards/main_page_cards';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Search} from '../searchbar & filter/search_bar';
 
 const image = require('../../components/other/image3.jpg');
 const uploadIcon = require('../../components/other/upload_image5.png');
@@ -93,21 +94,22 @@ export const cardsData = [
 ];
 
 export const Main_page = ({route}) => {
-
-  const {email}=route.params;
+  const {email} = route.params;
   const navigation = useNavigation();
 
   SampleFunction = () => {
     // Write your own code here, Which you want to execute on Floating Button Click Event.
     Alert.alert(`Floating Button Clicked ${email}`);
-    navigation.navigate('Upload',{email});
+    navigation.navigate('Upload', {email});
   };
 
   return (
     <View style={styles.container}>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-        <View style={styles.row}>
+        <View>
+          
           <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Search />
             {cardsData.map((card, index) => (
               <CustomCard
                 key={index}
@@ -138,37 +140,20 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    // marginBottom:0,
   },
-  innerbox1: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  searchcontainer: {
+    marginTop: 0,
+    marginBottom: 5,
   },
   text: {
     fontSize: 40,
     color: 'white',
   },
-  whiteBox: {
-    backgroundColor: 'white',
-    borderRadius: 0,
-    padding: 10,
-    paddingTop: 15,
-    paddingBottom: 15,
-    width: '95%',
-    maxWidth: 600,
-    // maxHeight:'80%',
-    marginBottom: 50,
-    flex: 1,
-    opacity: 1,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    // flexWrap:'wrap',
-    // width: '100%',
-    //padding: 6,
-  },
   scrollContainer: {
+    marginTop: 0,
+    paddingVertical: 0,
+    paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
     flexWrap: 'wrap',
@@ -176,7 +161,7 @@ const styles = StyleSheet.create({
   },
   TouchableOpacityStyle: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 40,
     right: 20,
     alignItems: 'center',
     justifyContent: 'center',

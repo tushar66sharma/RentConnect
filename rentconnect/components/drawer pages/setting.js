@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React,{useState}from 'react';
 import {
   StyleSheet,
@@ -16,6 +17,14 @@ const image = require('../../components/other/image3.jpg');
 const image1 = require('../../components/other/user_icon.jpg');
 
 export const  Settings = ({route}) => {
+  const navigation=useNavigation();
+  const handleSubmission=()=>{
+    navigation.navigate('Login');
+  }
+
+
+
+
   const {email} = route.params;
   const [form, setForm] = useState({
     emailNotifications: true,
@@ -50,14 +59,9 @@ export const  Settings = ({route}) => {
             <Text style={styles.profileName}>{email}</Text>
 
             <TouchableOpacity
-              onPress={() => {
-                // handle onPress
-              }}>
-              <View style={styles.profileAction}>
-                <Text style={styles.profileActionText}>Edit Profile</Text>
-
-                <FeatherIcon color="#fff" name="edit" size={16} />
-              </View>
+              style={styles.button}
+              onPress={handleSubmission}>
+              <Text style={styles.buttonText}>Log Out</Text>
             </TouchableOpacity>
           </View>
 
@@ -285,22 +289,38 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#848484',
   },
-  profileAction: {
-    marginTop: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#007bff',
-    borderRadius: 12,
+  button: {
+    backgroundColor: 'blue',
+    padding: 10,
+    marginTop: 5,
+    borderRadius: 5,
+    marginTop:10,
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 0,
   },
-  profileActionText: {
-    marginRight: 8,
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#fff',
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
+  // profileAction: {
+  //   marginTop: 12,
+  //   paddingVertical: 10,
+  //   paddingHorizontal: 16,
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   backgroundColor: '#007bff',
+  //   borderRadius: 12,
+  // },
+  // profileActionText: {
+  //   marginRight: 8,
+  //   fontSize: 15,
+  //   fontWeight: '600',
+  //   color: '#fff',
+  // },
   /** Section */
   section: {
     paddingTop: 12,
