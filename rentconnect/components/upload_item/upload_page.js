@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, TextInput, Image, TouchableOpacity,ScrollView, Alert } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/Ionicons'; // Import the icon library
 const image = require('../../components/other/image3.jpg');
@@ -15,9 +15,9 @@ const categories = [
   'Tools',
 ];
 
-export const Upload = () => {
-  const navigation = useNavigation();
-  const [itemName, setItemName] = useState('');
+export const Upload = ({route}) => {
+  const {email} = route.params;
+  const navtigation= useNavigation();
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [imageUri, setImageUri] = useState(null);
@@ -31,8 +31,9 @@ export const Upload = () => {
     console.log('Item Price:', price);
     console.log('Category:', category);
     console.log('Image URI:', imageUri);
-    console.log('Quantity:', quantity);
-    navigation.navigate('Main');
+    navtigation.navigate('Main');
+    Alert.alert(`item uploaded..${email}`);
+
   };
 
   const selectImage = () => {
