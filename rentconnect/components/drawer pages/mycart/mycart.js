@@ -11,7 +11,8 @@ const saleImage=require('../../../components/other/sale_image2.png');
 const cartImage=require('../../../components/other/rent_image.png');
 const Tab = createMaterialBottomTabNavigator();
 
-export const Mycart = () => {
+export const Mycart = ({route}) => {
+  const {email} = route.params;
   return (
     <View style={styles.container}>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
@@ -24,6 +25,7 @@ export const Mycart = () => {
           <Tab.Screen
             name="Sale"
             component={Sale}
+            initialParams={{email}}
             options={{
               tabBarLabel: 'Sale',
               tabBarIcon: ({ color }) => (
@@ -34,6 +36,7 @@ export const Mycart = () => {
           <Tab.Screen
             name="Rent"
             component={Rent}
+            initialParams={{email}}
             options={{
               tabBarLabel: 'Cart',
               tabBarIcon: ({ color }) => (

@@ -9,6 +9,7 @@ import {
   ImageSourcePropType,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 
 
@@ -20,6 +21,8 @@ interface CustomCardProps {
   cardStyle?: object;
   imageSource?: ImageSourcePropType;
   email:string;
+  name:string;
+  quantity:number;
 }
 
 export const CustomCard1: React.FC<CustomCardProps> = ({
@@ -29,9 +32,19 @@ export const CustomCard1: React.FC<CustomCardProps> = ({
   cardStyle = {},
   imageSource,
   email,
+  name,
+  quantity
 }) => {
 
-  const handleView = () => {};
+  const [expanded, setExpanded] = useState(false);
+
+  const handleCardPress = () => {
+    setExpanded(!expanded);
+  };
+
+  const handleView = () => {
+    Alert.alert(`item Withdrawed...${email}`);
+  };
 
   const renderTextInput = () => {
     if (flag) {
@@ -65,18 +78,33 @@ export const CustomCard1: React.FC<CustomCardProps> = ({
           />
         </View>
       )}
-      <View>
-        <Text style={styles.title}>{title}</Text>
-        <View style={styles.divider} />
-        <Text>{content}</Text>
+      <View style={styles.box1}>
+        <Text style={styles.name}>{name}</Text>
+        {/* <View style={styles.divider} /> */}
+        <View style={styles.title_qnt}>
+        <Text style={styles.title}>Price: {title}</Text>
+        <Text style={styles.qnt}>Qnt : {quantity}</Text>
+        </View>
+        {/* <View style={styles.divider} /> */}
+        <TouchableOpacity onPress={handleCardPress}>
+          <Text style={styles.details_button}> Details</Text>
+        </TouchableOpacity>
+        {expanded && (
+          <>
+          <Text style={styles.content}>{content}</Text>
+          </>)}
       </View>
       <View style={styles.box2}>
         {renderTextInput()}
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText} onPress={handleView}>
-            Withdraw
-          </Text>
-        </TouchableOpacity>
+        {flag ? (
+          <TouchableOpacity style={styles.button} onPress={handleView}>
+            <Text style={styles.buttonText}>Withdraw</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={[styles.button, styles.disabledButton]}>
+            <Text style={styles.buttonText}>Withdraw</Text>
+          </View>
+        )}
       </View>
     </View>
 
@@ -134,7 +162,10 @@ const styles = StyleSheet.create({
   cardImageContainer: {
     flex: 1,
     width: '100%',
+    // height:'60%',
     overflow: 'hidden',
+    justifyContent: 'center', 
+    alignItems: 'center', 
   },
   cardImage: {
     flex: 1,
@@ -144,17 +175,48 @@ const styles = StyleSheet.create({
     // marginBottom: 2,
     resizeMode: 'contain',
   },
-  content: {},
-  title: {
+  content: {
+    fontSize:16,
+    color:'black',
+    alignSelf:'center'
+  },
+  details_button:{
+    fontSize:16,
+    color:'blue',
+    alignSelf:'center'
+  },
+  name:{
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 1,
+    marginBottom: 5,
     color: 'black',
+    alignSelf:'center',
+
+  },
+  title_qnt:{
+    flexDirection:'row',
+    justifyContent:'space-between',
+    marginBottom:4,
+    marginTop:4,
+  },
+  title: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginBottom: 2,
+    color: 'black',
+    marginLeft:4,
+  },
+  qnt:{
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginBottom: 2,
+    color: 'black',
+    marginRight:8,
   },
   divider: {
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
-    marginBottom: 8,
+    marginBottom:4,
   },
   input: {
     height: 35,
@@ -204,5 +266,14 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
   },
+  disabledButton: {
+    backgroundColor: '#d3d3d3',
+  },
+  box1:{
+    width:'100%',
+    // alignContent:'center',
+    // alignItems:'center'
+    
+  }
 });
 

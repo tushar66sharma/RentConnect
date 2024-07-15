@@ -20,72 +20,96 @@ const uploadIcon = require('../../components/other/upload_image5.png');
 
 export const cardsData = [
   {
+    name:'Laptop Charger',
+    quantity:1,
     title: '₹500',
     content: 'Laptop charger adapter 4.5mm for HP Pavilion',
     imageSource: require('../../components/cards/assets/charger.jpg'),
     flag: false,
   },
   {
+    name:'Laptop',
+    quantity:1,
     title: '₹53,000',
     content: 'HP intel i5,11th gen',
     imageSource: require('../../components/cards/assets/laptop.jpg'),
     flag: true,
   },
   {
+    name:'Cycle',
+    quantity:1,
     title: '₹500',
     content: 'Berlin Cylce',
     imageSource: require('../../components/cards/assets/cycle.jpg'),
     flag: false,
   },
   {
+    name:'Shoes',
+    quantity:2,
     title: '₹500',
     content: 'Vomero 17 Men running shoes',
     imageSource: require('../../components/cards/assets/shoes.jpg'),
     flag: true,
   },
   {
+    name:'Book',
+    quantity:5,
     title: '₹ 335',
     content: 'Griffiths',
     imageSource: require('../../components/cards/assets/book.jpg'),
     flag: false,
   },
   {
+    name:'Medicine',
+    quantity:15,
     title: '₹ 50',
     content: 'Parcetamol 50mg',
     imageSource: require('../../components/cards/assets/medicines.jpg'),
     flag: true,
   },
   {
+    name:'Umbrella',
+    quantity:2,
     title: '₹ 150',
     content: 'Umbrella',
     imageSource: require('../../components/cards/assets/umbrella.jpg'),
     flag: true,
   },
   {
+    name:'Camera',
+    quantity:1,
     title: '₹800',
-    content: 'Canon Powershot SX70 20.3MP Digital Camera 65x Optical Zoom Lens',
+    content: 'Canon Powershot SX70 20.3MP Digital Camera 65x Optical Zoom Lens Canon Powershot SX70 20.3MP Digital Camera 65x Optical Zoom Lens  ',
     imageSource: require('../../components/cards/assets/camera.jpg'),
     flag: false,
   },
   {
+    name:'Study Lamp',
+    quantity:4,
     title: '₹400',
     content: 'Lamp',
     imageSource: require('../../components/cards/assets/lamp.jpg'),
     flag: false,
   },
   {
+    name:'Drater',
+    quantity:5,
     title: '₹150',
     content: 'MiniDrafter',
     imageSource: require('../../components/cards/assets/drafter.jpg'),
     flag: true,
   },
   {
+    name:'drafter',
+    quantity:1,
     title: '₹150',
     content: 'MiniDrafter',
     imageSource: require('../../components/cards/assets/drafter.jpg'),
     flag: true,
   },
   {
+    name:'laptop',
+    quantity:1,
     title: '₹400',
     content: 'Lamp',
     imageSource: require('../../components/cards/assets/lamp.jpg'),
@@ -118,6 +142,8 @@ export const Main_page = ({route}) => {
                 imageSource={card.imageSource}
                 flag={card.flag}
                 email={email}
+                name={card.name}
+                quantity={card.quantity}
               />
             ))}
           </ScrollView>

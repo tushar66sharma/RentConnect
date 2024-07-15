@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View, TextInput, Image, TouchableOpacity,ScrollView } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, TextInput, Image, TouchableOpacity,ScrollView, Alert } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 const image = require('../../components/other/image3.jpg');
 import { useNavigation } from '@react-navigation/native';
 
-export const Upload = () => {
+export const Upload = ({route}) => {
+  const {email} = route.params;
   const navtigation= useNavigation();
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -19,6 +20,7 @@ export const Upload = () => {
     console.log('Category:',category);
     console.log('Image URI:', imageUri);
     navtigation.navigate('Main');
+    Alert.alert(`item uploaded..${email}`);
 
   };
 

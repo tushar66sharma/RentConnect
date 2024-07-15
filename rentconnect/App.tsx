@@ -52,9 +52,10 @@ export function Root({route}:any) {
       <Drawer.Screen
         name="Mycart"
         component={Mycart}
+        initialParams={{email}}
         options={{
           headerStyle: {
-            backgroundColor: '#0000cd',
+            backgroundColor: '#0000cd', 
           },
           headerTitleStyle: {
             color: 'white', // Set the desired text color
