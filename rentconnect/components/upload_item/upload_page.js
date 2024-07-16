@@ -78,10 +78,10 @@ export const Upload = ({ route }) => {
   };
 
   const handleDescriptionChange = (text) => {
-    if (text.length <= 50) {
+    if (text.length <= 150) {
       setDescription(text);
     } else {
-      Alert.alert('Limit Exceeded', 'Description can only be up to 50 characters.');
+      Alert.alert('Limit Exceeded', 'Description can only be up to 150 characters.');
     }
   };
 

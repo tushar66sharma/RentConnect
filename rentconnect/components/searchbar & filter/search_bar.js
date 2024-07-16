@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 70,
     right: 20,
-    width: 220, // Set the width for the dropdown
+    width: 350, // Set the width for the dropdown
     maxHeight: 200, // Set the maximum height for the dropdown
     backgroundColor: 'white',
     borderColor: '#ccc',
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     maxHeight: 200, // Ensure the scroll view respects the max height
   },
   dropdownItem: {
-    paddingVertical: 10,
+    paddingVertical: 15,
     paddingHorizontal: 15,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,

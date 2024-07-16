@@ -79,7 +79,7 @@ export const cardsData = [
     name:'Camera',
     quantity:1,
     title: '₹800',
-    content: 'Canon Powershot SX70 20.3MP Digital Camera 65x Optical Zoom Lens Canon Powershot SX70 20.3MP Digital Camera 65x Optical Zoom Lens  ',
+    content: 'Canon Powershot SX70 20.3MP Digital Camera 65x Optical Zoom Lens Canon Powershot SX70 20.3MP Digital Camera 65x Optical Zoom Lens hello world have llm ',
     imageSource: require('../../components/cards/assets/camera.jpg'),
     flag: false,
   },
