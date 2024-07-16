@@ -12,7 +12,7 @@ import {Mycart} from './components/drawer pages/mycart/mycart.js';
 import {Notification} from './components/drawer pages/notifications.js';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {Upload} from './components/upload_item/upload_page.js';
-import { FilterPage } from './components/searchbar & filter/filterpage.js';
+//import { FilterPage } from './components/searchbar & filter/filterpage.js';
 
 const Drawer = createDrawerNavigator();
 
@@ -148,7 +148,7 @@ function App(): React.JSX.Element {
               },
             }}
           />
-           <Stack.Screen
+          {/* <Stack.Screen
             name="Filters"
             component={FilterPage}
             options={{
@@ -159,7 +159,8 @@ function App(): React.JSX.Element {
                 color: 'white', // Set the desired text color
               },
             }}
-          />
+          /> */}
+          
         </Stack.Navigator>
       </NavigationContainer>
     </View>
