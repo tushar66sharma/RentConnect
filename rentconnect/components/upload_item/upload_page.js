@@ -15,7 +15,8 @@ const categories = [
   'Tools',
 ];
 
-export const Upload = () => {
+export const Upload = ({route}) => {
+  const {email}=route.params;
   const navigation = useNavigation();
   const [itemName, setItemName] = useState('');
   const [description, setDescription] = useState('');
@@ -33,6 +34,7 @@ export const Upload = () => {
     console.log('Image URI:', imageUri);
     console.log('Quantity:', quantity);
     navigation.navigate('Main');
+    Alert.alert(`item uploaded..${email}`);
   };
 
   const selectImage = () => {
