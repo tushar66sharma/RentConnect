@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ImageBackground, StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -10,13 +9,13 @@ const categories = [
   'Electronics',
   'Daily Uses',
   'Food',
-  'Books',  
+  'Books',
   'Clothes',
   'Tools',
 ];
 
-export const Upload = ({route}) => {
-  const {email}=route.params;
+export const Upload = ({ route }) => {
+  const { email } = route.params;
   const navigation = useNavigation();
   const [itemName, setItemName] = useState('');
   const [description, setDescription] = useState('');
@@ -152,7 +151,6 @@ export const Upload = ({route}) => {
               keyboardType="numeric"
             />
             <View style={styles.quantityContainer}>
-            
               <TouchableOpacity style={styles.quantityButton} onPress={decrementQuantity}>
                 <Text style={styles.quantityButtonText}>-</Text>
               </TouchableOpacity>
@@ -160,7 +158,7 @@ export const Upload = ({route}) => {
                 style={styles.quantityInput}
                 placeholder="Quantity"
                 placeholderTextColor="white"
-               // value={String(quantity)}
+                value={String(quantity)} // Set value to quantity state
                 onChangeText={handleQuantityChange}
                 keyboardType="numeric"
               />
@@ -326,7 +324,7 @@ const styles = StyleSheet.create({
   },
   quantityButtonText: {
     color: 'white',
-   fontSize: 20,
+    fontSize: 20,
   },
   quantityInput: {
     width: 120, // Adjust width to fit placeholder and buttons
