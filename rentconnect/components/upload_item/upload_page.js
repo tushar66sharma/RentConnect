@@ -12,6 +12,7 @@ const categories = [
   'Books',
   'Clothes',
   'Tools',
+  'Other',
 ];
 
 export const Upload = ({ route }) => {
@@ -78,11 +79,7 @@ export const Upload = ({ route }) => {
   };
 
   const handleDescriptionChange = (text) => {
-    if (text.length <= 150) {
       setDescription(text);
-    } else {
-      Alert.alert('Limit Exceeded', 'Description can only be up to 150 characters.');
-    }
   };
 
   const handlePriceChange = (text) => {
@@ -116,11 +113,10 @@ export const Upload = ({ route }) => {
             />
             <TextInput
               style={styles.input}
-              placeholder="Item Description (max 150 characters)"
+              placeholder="Item Description"
               placeholderTextColor="white"
               value={description}
               onChangeText={handleDescriptionChange}
-              maxLength={150} // Limit input to 50 characters
               multiline
             />
             <TouchableOpacity style={styles.dropdownInput} onPress={toggleDropdown}>

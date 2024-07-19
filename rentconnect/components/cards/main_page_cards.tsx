@@ -11,6 +11,19 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+export type RootStackParamList = {
+  Order: {title:string;
+    content:string;
+    flag:boolean;
+    imageSource?:ImageSourcePropType;
+    email:string;
+    quantity:number;
+    name:string;
+  };
+};
 
 interface CustomCardProps {
   title: string;
@@ -35,6 +48,8 @@ export const CustomCard: React.FC<CustomCardProps> = ({
   quantity,
 }) => {
 
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   const [expanded, setExpanded] = useState(false);
 
   const handleCardPress = () => {
@@ -43,7 +58,16 @@ export const CustomCard: React.FC<CustomCardProps> = ({
 
 
   const handleView = () => {
-    Alert.alert(`Order placed...${email}`);
+    Alert.alert(`View Button Clicked...${email}`);
+    navigation.navigate('Order', {
+      title,
+      content,
+      flag,
+      email,
+      quantity,
+      imageSource,
+      name,
+    });
   };
 
   const renderTextInput = () => {
@@ -88,23 +112,23 @@ export const CustomCard: React.FC<CustomCardProps> = ({
         <Text style={styles.qnt}>Qnt : {quantity}</Text>
         </View>
         {/* <View style={styles.divider} /> */}
-        <TouchableOpacity onPress={handleCardPress}>
+        {/* <TouchableOpacity onPress={handleCardPress}>
           <Text style={styles.details_button}> Details</Text>
         </TouchableOpacity>
         {expanded && (
           <>
           <Text style={styles.content}>{content}</Text>
-          </>)}
+          </>)} */}
       </View>
       <View style={styles.box2}>
         {renderTextInput()}
         {flag ? (
           <TouchableOpacity style={styles.button} onPress={handleView}>
-            <Text style={styles.buttonText}>Order</Text>
+            <Text style={styles.buttonText}>View</Text>
           </TouchableOpacity>
         ) : (
           <View style={[styles.button, styles.disabledButton]}>
-            <Text style={styles.buttonText}>Order</Text>
+            <Text style={styles.buttonText}>View</Text>
           </View>
         )}
       </View>

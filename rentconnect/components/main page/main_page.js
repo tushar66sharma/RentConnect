@@ -41,7 +41,7 @@ export const cardsData = [
     title: '₹500',
     content: 'Berlin Cylce',
     imageSource: require('../../components/cards/assets/cycle.jpg'),
-    flag: false,
+    flag: true,
   },
   {
     name:'Shoes',
@@ -81,7 +81,7 @@ export const cardsData = [
     title: '₹800',
     content: 'Canon Powershot SX70 20.3MP Digital Camera 65x Optical Zoom Lens Canon Powershot SX70 20.3MP Digital Camera 65x Optical Zoom Lens hello world have llm ',
     imageSource: require('../../components/cards/assets/camera.jpg'),
-    flag: false,
+    flag: true,
   },
   {
     name:'Study Lamp',
@@ -113,7 +113,7 @@ export const cardsData = [
     title: '₹400',
     content: 'Lamp',
     imageSource: require('../../components/cards/assets/lamp.jpg'),
-    flag: false,
+    flag: true,
   },
 ];
 
