@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {ImageBackground, LogBox, StyleSheet, Text, View} from 'react-native';
 import {Login_page} from './components/login page/login.js';
 import {NavigationContainer} from '@react-navigation/native';
@@ -12,7 +12,8 @@ import {Mycart} from './components/drawer pages/mycart/mycart.js';
 import {Notification} from './components/drawer pages/notifications.js';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {Upload} from './components/upload_item/upload_page.js';
-import { OrderDetails_Page } from './components/order page/order_details.js';
+import {OrderDetails_Page} from './components/order page/order_details.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 //import { FilterPage } from './components/searchbar & filter/filterpage.js';
 
 const Drawer = createDrawerNavigator();
@@ -20,11 +21,8 @@ const Drawer = createDrawerNavigator();
 enableScreens();
 const Stack = createNativeStackNavigator();
 
-
-
-
-export function Root({route}:any) {
-  const {email} =route.params;
+export function Root({route}: any) {
+  const {email} = route.params;
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -56,7 +54,7 @@ export function Root({route}:any) {
         initialParams={{email}}
         options={{
           headerStyle: {
-            backgroundColor: '#0000cd', 
+            backgroundColor: '#0000cd',
           },
           headerTitleStyle: {
             color: 'white', // Set the desired text color
@@ -89,11 +87,22 @@ export function Root({route}:any) {
         }}
       />
     </Drawer.Navigator>
-    
   );
 }
 
 function App(): React.JSX.Element {
+  const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    const fetchEmail = async () => {
+      const storedEmail = await AsyncStorage.getItem('email');
+      if (storedEmail) {
+        setEmail(storedEmail);
+      }
+    };
+    fetchEmail();
+  }, []);
+
   return (
     <View style={{flex: 1}}>
       <NavigationContainer>
@@ -173,7 +182,6 @@ function App(): React.JSX.Element {
               },
             }}
           /> */}
-          
         </Stack.Navigator>
       </NavigationContainer>
     </View>

@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { launchImageLibrary } from 'react-native-image-picker';
+import React, {useState, useEffect} from 'react';
+import {
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from 'react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons'; // Import the icon library
 const image = require('../../components/other/image3.jpg');
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const categories = [
   'Electronics',
@@ -12,29 +24,63 @@ const categories = [
   'Books',
   'Clothes',
   'Tools',
-  'Other',
 ];
 
-export const Upload = ({ route }) => {
-  const { email } = route.params;
+export const Upload = ({route}) => {
   const navigation = useNavigation();
   const [itemName, setItemName] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [imageUri, setImageUri] = useState(null);
   const [category, setCategory] = useState('');
+  const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState(1);
+  const [imageUri, setImageUri] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [token, setToken] = useState('');
+  const [email, setEmail] = useState('');
 
-  const handleUpload = () => {
-    console.log('Item Name:', itemName);
-    console.log('Item Description:', description);
-    console.log('Item Price:', price);
-    console.log('Category:', category);
-    console.log('Image URI:', imageUri);
-    console.log('Quantity:', quantity);
-    navigation.navigate('Main');
-    Alert.alert(`item uploaded..${email}`);
+  useEffect(() => {
+    const fetchData = async () => {
+      const storedToken = await AsyncStorage.getItem('token');
+      const storedEmail = await AsyncStorage.getItem('email');
+      setToken(storedToken);
+      setEmail(storedEmail);
+    };
+    fetchData();
+  }, []);
+
+  const handleUpload = async () => {
+    if (!itemName || !description || !category || !price || !quantity) {
+      Alert.alert('All fields are required!');
+      return;
+    }
+
+    const itemData = {
+      name: itemName,
+      description,
+      category,
+      price: parseFloat(price),
+      quantity: parseInt(quantity),
+      imageUrl: imageUri,
+      owner: email, // assuming email is used as the owner identifier
+    };
+
+    try {
+      const response = await axios.post(
+        'http://192.168.242.172:5001/items',
+        itemData,
+        {
+          headers: {
+            Authorization: token,
+          },
+        },
+      );
+      console.log(response.data);
+      Alert.alert('Item uploaded successfully!');
+      navigation.navigate('Main');
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Failed to upload item. Please try again.');
+    }
   };
 
   const selectImage = () => {
@@ -43,7 +89,7 @@ export const Upload = ({ route }) => {
       quality: 1,
     };
 
-    launchImageLibrary(options, (response) => {
+    launchImageLibrary(options, response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.errorCode) {
@@ -63,7 +109,7 @@ export const Upload = ({ route }) => {
     setDropdownVisible(!dropdownVisible);
   };
 
-  const selectCategory = (selectedCategory) => {
+  const selectCategory = selectedCategory => {
     setCategory(selectedCategory);
     setDropdownVisible(false);
   };
@@ -78,11 +124,18 @@ export const Upload = ({ route }) => {
     }
   };
 
-  const handleDescriptionChange = (text) => {
+  const handleDescriptionChange = text => {
+    if (text.length <= 150) {
       setDescription(text);
+    } else {
+      Alert.alert(
+        'Limit Exceeded',
+        'Description can only be up to 150 characters.',
+      );
+    }
   };
 
-  const handlePriceChange = (text) => {
+  const handlePriceChange = text => {
     if (/^\d*$/.test(text)) {
       setPrice(text);
     } else {
@@ -90,11 +143,11 @@ export const Upload = ({ route }) => {
     }
   };
 
-  const handleQuantityChange = (text) => {
+  const handleQuantityChange = text => {
     if (/^\d*$/.test(text)) {
       setQuantity(parseInt(text) || 1);
     } else {
-      Alert.alert('Invalid  Input', 'Please enter numbers only');
+      Alert.alert('Invalid Input', 'Please enter numbers only');
     }
   };
 
@@ -113,15 +166,25 @@ export const Upload = ({ route }) => {
             />
             <TextInput
               style={styles.input}
-              placeholder="Item Description"
+              placeholder="Item Description (max 150 characters)"
               placeholderTextColor="white"
               value={description}
               onChangeText={handleDescriptionChange}
+              maxLength={150} // Limit input to 150 characters
               multiline
             />
-            <TouchableOpacity style={styles.dropdownInput} onPress={toggleDropdown}>
-              <Text style={styles.dropdownInputText}>{category || 'Select Category'}</Text>
-              <Icon name="chevron-down-outline" size={20} color="white" style={styles.dropdownIcon} />
+            <TouchableOpacity
+              style={styles.dropdownInput}
+              onPress={toggleDropdown}>
+              <Text style={styles.dropdownInputText}>
+                {category || 'Select Category'}
+              </Text>
+              <Icon
+                name="chevron-down-outline"
+                size={20}
+                color="white"
+                style={styles.dropdownIcon}
+              />
             </TouchableOpacity>
             {dropdownVisible && (
               <View style={styles.dropdownContainer}>
@@ -130,8 +193,7 @@ export const Upload = ({ route }) => {
                     <TouchableOpacity
                       key={index}
                       onPress={() => selectCategory(cat)}
-                      style={styles.dropdownItem}
-                    >
+                      style={styles.dropdownItem}>
                       <Text style={styles.dropdownItemText}>{cat}</Text>
                     </TouchableOpacity>
                   ))}
@@ -147,7 +209,9 @@ export const Upload = ({ route }) => {
               keyboardType="numeric"
             />
             <View style={styles.quantityContainer}>
-              <TouchableOpacity style={styles.quantityButton} onPress={decrementQuantity}>
+              <TouchableOpacity
+                style={styles.quantityButton}
+                onPress={decrementQuantity}>
                 <Text style={styles.quantityButtonText}>-</Text>
               </TouchableOpacity>
               <TextInput
@@ -158,7 +222,9 @@ export const Upload = ({ route }) => {
                 onChangeText={handleQuantityChange}
                 keyboardType="numeric"
               />
-              <TouchableOpacity style={styles.quantityButton} onPress={incrementQuantity}>
+              <TouchableOpacity
+                style={styles.quantityButton}
+                onPress={incrementQuantity}>
                 <Text style={styles.quantityButtonText}>+</Text>
               </TouchableOpacity>
             </View>
@@ -167,8 +233,10 @@ export const Upload = ({ route }) => {
             </TouchableOpacity>
             {imageUri && (
               <View style={styles.imageContainer}>
-                <Image source={{ uri: imageUri }} style={styles.selectedImage} />
-                <TouchableOpacity style={styles.removeButton} onPress={removeImage}>
+                <Image source={{uri: imageUri}} style={styles.selectedImage} />
+                <TouchableOpacity
+                  style={styles.removeButton}
+                  onPress={removeImage}>
                   <Text style={styles.removeButtonText}>X</Text>
                 </TouchableOpacity>
               </View>
@@ -245,65 +313,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button1: {
-    backgroundColor: '#1E90FF',
+    backgroundColor: '#1e90ff',
     paddingVertical: 15,
     paddingHorizontal: 25,
     borderRadius: 10,
-    marginBottom: 20,
+    marginTop: 20,
     alignItems: 'center',
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-  },
-  imageContainer: {
-    position: 'relative',
-    width: 200,
-    height: 200,
-    marginBottom: 20,
-  },
-  selectedImage: {
-    width: '100%',
-    height: '100%',
-  },
-  removeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    borderRadius: 15,
-    width: 30,
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  removeButtonText: {
-    color: 'white',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   dropdownContainer: {
-    position: 'relative',
     width: '80%',
     maxHeight: 200,
-    backgroundColor: 'white',
-    borderColor: '#ccc',
+    borderColor: 'white',
     borderWidth: 1,
-    borderRadius: 8,
-    zIndex: 1,
+    borderRadius: 10,
+    backgroundColor: 'black',
+    marginBottom: 20,
   },
   dropdown: {
-    maxHeight: 200,
+    paddingVertical: 10,
   },
   dropdownItem: {
     paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
+    paddingHorizontal: 20,
   },
   dropdownItemText: {
+    color: 'white',
     fontSize: 16,
   },
   quantityContainer: {
@@ -312,26 +351,53 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   quantityButton: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'white',
+    borderRadius: 10,
     backgroundColor: 'black',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginHorizontal: 5, // Add margin between buttons and input
   },
   quantityButtonText: {
     color: 'white',
-    fontSize: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   quantityInput: {
-    width: 120, // Adjust width to fit placeholder and buttons
+    width: 80,
     height: 50,
     borderColor: 'white',
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 10,
+    paddingHorizontal: 10,
     textAlign: 'center',
-    fontSize: 20,
+    marginHorizontal: 10,
     color: 'white',
     backgroundColor: 'black',
+  },
+  imageContainer: {
+    position: 'relative',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  selectedImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+  },
+  removeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'red',
+    borderRadius: 50,
+    padding: 5,
+  },
+  removeButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
