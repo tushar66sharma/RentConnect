@@ -12,6 +12,8 @@ import {
   Alert,
   TextInput,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
 
 const image = require('../../components/other/image3.jpg');
 
@@ -27,15 +29,19 @@ const Userdata = [
   },
 ];
 
-const handleView = (email) => {
-  Alert.alert(`Order Button Clicked...${email}`);
-};
+
 
 export const OrderDetails_Page = ({ route }) => {
   const { title, content, flag, imageSource, email, quantity: availableQuantity, name } = route.params;
+  const navigation = useNavigation();
 
   const [quantity, setQuantity] = useState(1);
   const [warning, setWarning] = useState('');
+
+  const handleView = (email) => {
+    Alert.alert(`Order Button Clicked...${email}`);
+    navigation.navigate('Main');
+  };
 
   const incrementQuantity = () => {
     if (quantity < availableQuantity) {
