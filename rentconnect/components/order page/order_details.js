@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,11 +10,12 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  TextInput,
 } from 'react-native';
 
 const image = require('../../components/other/image3.jpg');
 
-const {height} = Dimensions.get('window'); // Get device height
+const { height } = Dimensions.get('window'); // Get device height
 
 // Example User Data
 const Userdata = [
@@ -25,12 +27,47 @@ const Userdata = [
   },
 ];
 
-const handleView = email => {
+const handleView = (email) => {
   Alert.alert(`Order Button Clicked...${email}`);
 };
 
-export const OrderDetails_Page = ({route}) => {
-  const {title, content, flag, imageSource, email, quantity, name} = route.params;
+export const OrderDetails_Page = ({ route }) => {
+  const { title, content, flag, imageSource, email, quantity: availableQuantity, name } = route.params;
+
+  const [quantity, setQuantity] = useState(1);
+  const [warning, setWarning] = useState('');
+
+  const incrementQuantity = () => {
+    if (quantity < availableQuantity) {
+      setQuantity(quantity + 1);
+      setWarning('');
+    } else {
+      setWarning('Quantity exceeds available stock');
+    }
+  };
+
+  const decrementQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+      setWarning('');
+    } else {
+      setWarning('Quantity cannot be less than 1');
+    }
+  };
+
+  const handleQuantityChange = (value) => {
+    const newQuantity = parseInt(value);
+    if (!isNaN(newQuantity)) {
+      if (newQuantity >= 1 && newQuantity <= availableQuantity) {
+        setQuantity(newQuantity);
+        setWarning('');
+      } else if (newQuantity < 1) {
+        setWarning('Quantity cannot be less than 1');
+      } else {
+        setWarning('Quantity exceeds available stock');
+      }
+    }
+  };
 
   // Assuming there's only one user data in the array
   const user = Userdata[0];
@@ -48,6 +85,20 @@ export const OrderDetails_Page = ({route}) => {
           </View>
 
           <View style={styles.detailsContainer}>
+            <View style={styles.quantityContainer}>
+              <TouchableOpacity style={styles.counterButton} onPress={decrementQuantity}>
+                <Text style={styles.counterButtonText}>-</Text>
+              </TouchableOpacity>
+              <View style={styles.quantityDisplay}>
+                <Text style={styles.quantityText}>{quantity}</Text>
+              </View>
+              <TouchableOpacity style={styles.counterButton} onPress={incrementQuantity}>
+                <Text style={styles.counterButtonText}>+</Text>
+              </TouchableOpacity>
+            </View>
+
+            {warning ? <Text style={styles.warningText}>{warning}</Text> : null}
+
             <TouchableOpacity
               style={styles.button}
               onPress={() => handleView(email)}
@@ -60,9 +111,8 @@ export const OrderDetails_Page = ({route}) => {
                 <Text style={styles.productName}>{name}</Text>
                 <Text style={styles.productTitle}>{title}</Text>
               </View>
-              <Text style={styles.productQuantity}>Quantity: {quantity}</Text>
+              <Text style={styles.productQuantity}>Quantity Available: {availableQuantity}</Text>
               <Text style={styles.productDescription}>{content}</Text>
-                
             </View>
 
             <View style={styles.userDetails}>
@@ -108,17 +158,51 @@ const styles = StyleSheet.create({
   detailsContainer: {
     padding: 20,
     backgroundColor: '#000000', // Changed background color
-    
-    borderRadius:20,
+    borderRadius: 20,
     elevation: 6,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
-    marginTop:0, // Adjust to overlap with card image
-    marginBottom:20,
-    marginLeft:5,
-    marginRight:5,
+    marginTop: 0, // Adjust to overlap with card image
+    marginBottom: 20,
+    marginLeft: 5,
+    marginRight: 5,
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  counterButton: {
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 5,
+  },
+  counterButtonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  quantityDisplay: {
+    marginHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quantityText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  warningText: {
+    color: 'red',
+    marginBottom: 20,
+    textAlign: 'center',
   },
   itemDetails: {
     marginBottom: 20,
@@ -170,7 +254,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   button: {
-    backgroundColor: '#007bff', 
+    backgroundColor: '#007bff',
     height: 45,
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -184,3 +268,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
