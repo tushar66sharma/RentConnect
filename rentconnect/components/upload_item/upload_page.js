@@ -13,6 +13,7 @@ const categories = [
   'Clothes',
   'Tools',
   'Academic Resources',
+  'Lost and Found',
   'Other',
 ];
 
