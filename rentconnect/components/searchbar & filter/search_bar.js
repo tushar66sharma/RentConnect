@@ -23,6 +23,7 @@ const items = [
   'Books',
   'Clothes',
   'Tools',
+  'Academic Resources',
   'Other',
 ];
 

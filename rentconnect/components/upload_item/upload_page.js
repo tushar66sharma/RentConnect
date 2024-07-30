@@ -12,6 +12,7 @@ const categories = [
   'Books',
   'Clothes',
   'Tools',
+  'Academic Resources',
   'Other',
 ];
 
@@ -27,6 +28,11 @@ export const Upload = ({ route }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const handleUpload = () => {
+    if (!itemName.trim() || !description.trim() || !price.trim() || !category || !imageUri || quantity < 1) {
+      Alert.alert('Error', 'Please fill all fields and upload an image.');
+      return;
+    }
+    
     console.log('Item Name:', itemName);
     console.log('Item Description:', description);
     console.log('Item Price:', price);
