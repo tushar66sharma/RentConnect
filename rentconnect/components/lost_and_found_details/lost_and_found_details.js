@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,8 +11,11 @@ import {
   TouchableOpacity,
   Alert,
   TextInput,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { SendDirectSms } from 'react-native-send-direct-sms';
 
 
 const image = require('../../components/other/image3.jpg');
@@ -20,26 +23,68 @@ const image = require('../../components/other/image3.jpg');
 const { height } = Dimensions.get('window'); // Get device height
 
 // Example User Data
-const Userdata = [
-  {
-    salername: 'Tushar',
-    PhoneNo: 7456945121,
-    RollNo: '22BSM062',
-    Emailid: 'example1@email.com',
-  },
-];
 
 
 
 export const Lost_and_Found_Details_Page = ({ route }) => {
   const { title, content, flag, imageSource, email, quantity: availableQuantity, name } = route.params;
   const navigation = useNavigation();
+  const Userdata = [
+    {
+      salername: 'Tushar',
+      PhoneNo: '7456945121',
+      RollNo: '22BSM062',
+      Emailid: 'example1@email.com',
+    },
+  ];
+  const user = Userdata[0];
+  const [mobileNumber, setMobileNumber] = React.useState('');
+  const [bodySMS, setBodySMS] = React.useState('');
+
+  useEffect(() => {
+    setMobileNumber(user.PhoneNo);
+    setBodySMS("Your item has been Reported....");
+  }, [user]);
+  const requestSmsPermission = async () => {
+    try {
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.SEND_SMS,
+          {
+            title: 'SMS Permission',
+            message: 'This app needs access to your SMS to send messages.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('SMS permission granted');
+          sendSmsData(mobileNumber, bodySMS);
+        } else {
+          console.log('SMS permission denied');
+        }
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+
+  function sendSmsData(mobileNumber, bodySMS) {
+    SendDirectSms(mobileNumber, bodySMS)
+      .then((res) => console.log("SMS sent successfully", res))
+      .catch((err) => console.error("Error sending SMS", err));
+  }
+
+  
 
 //   const [quantity, setQuantity] = useState(1);
 //   const [warning, setWarning] = useState('');
 
   const handleView = (email) => {
     Alert.alert(`Report Button Clicked...${email}`);
+    requestSmsPermission();
     navigation.navigate('Lost and Found');
   };
 
@@ -76,7 +121,7 @@ export const Lost_and_Found_Details_Page = ({ route }) => {
 //   };
 
   // Assuming there's only one user data in the array
-  const user = Userdata[0];
+  
 
   return (
     <View style={styles.container}>
