@@ -11,8 +11,6 @@ import {
   TouchableOpacity,
   Alert,
   TextInput,
-  PermissionsAndroid,
-  Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -33,49 +31,49 @@ const Userdata = [
 
 
 
-export const OrderDetails_Page = ({ route }) => {
+export const Lost_and_Found_Details_Page = ({ route }) => {
   const { title, content, flag, imageSource, email, quantity: availableQuantity, name } = route.params;
   const navigation = useNavigation();
 
-  const [quantity, setQuantity] = useState(1);
-  const [warning, setWarning] = useState('');
+//   const [quantity, setQuantity] = useState(1);
+//   const [warning, setWarning] = useState('');
 
   const handleView = (email) => {
-    Alert.alert(`Order Button Clicked...${email}`);
-    navigation.navigate('Main');
+    Alert.alert(`Report Button Clicked...${email}`);
+    navigation.navigate('Lost and Found');
   };
 
-  const incrementQuantity = () => {
-    if (quantity < availableQuantity) {
-      setQuantity(quantity + 1);
-      setWarning('');
-    } else {
-      setWarning('Quantity exceeds available stock');
-    }
-  };
+//   const incrementQuantity = () => {
+//     if (quantity < availableQuantity) {
+//       setQuantity(quantity + 1);
+//       setWarning('');
+//     } else {
+//       setWarning('Quantity exceeds available stock');
+//     }
+//   };
 
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-      setWarning('');
-    } else {
-      setWarning('Quantity cannot be less than 1');
-    }
-  };
+//   const decrementQuantity = () => {
+//     if (quantity > 1) {
+//       setQuantity(quantity - 1);
+//       setWarning('');
+//     } else {
+//       setWarning('Quantity cannot be less than 1');
+//     }
+//   };
 
-  const handleQuantityChange = (value) => {
-    const newQuantity = parseInt(value);
-    if (!isNaN(newQuantity)) {
-      if (newQuantity >= 1 && newQuantity <= availableQuantity) {
-        setQuantity(newQuantity);
-        setWarning('');
-      } else if (newQuantity < 1) {
-        setWarning('Quantity cannot be less than 1');
-      } else {
-        setWarning('Quantity exceeds available stock');
-      }
-    }
-  };
+//   const handleQuantityChange = (value) => {
+//     const newQuantity = parseInt(value);
+//     if (!isNaN(newQuantity)) {
+//       if (newQuantity >= 1 && newQuantity <= availableQuantity) {
+//         setQuantity(newQuantity);
+//         setWarning('');
+//       } else if (newQuantity < 1) {
+//         setWarning('Quantity cannot be less than 1');
+//       } else {
+//         setWarning('Quantity exceeds available stock');
+//       }
+//     }
+//   };
 
   // Assuming there's only one user data in the array
   const user = Userdata[0];
@@ -93,7 +91,7 @@ export const OrderDetails_Page = ({ route }) => {
           </View>
 
           <View style={styles.detailsContainer}>
-            <View style={styles.quantityContainer}>
+            {/* <View style={styles.quantityContainer}>
               <TouchableOpacity style={styles.counterButton} onPress={decrementQuantity}>
                 <Text style={styles.counterButtonText}>-</Text>
               </TouchableOpacity>
@@ -103,15 +101,15 @@ export const OrderDetails_Page = ({ route }) => {
               <TouchableOpacity style={styles.counterButton} onPress={incrementQuantity}>
                 <Text style={styles.counterButtonText}>+</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
 
-            {warning ? <Text style={styles.warningText}>{warning}</Text> : null}
+            {/* {warning ? <Text style={styles.warningText}>{warning}</Text> : null} */}
 
             <TouchableOpacity
               style={styles.button}
               onPress={() => handleView(email)}
             >
-              <Text style={styles.buttonText}>Order</Text>
+              <Text style={styles.buttonText}>Report</Text>
             </TouchableOpacity>
 
             <View style={styles.itemDetails}>
@@ -119,12 +117,12 @@ export const OrderDetails_Page = ({ route }) => {
                 <Text style={styles.productName}>{name}</Text>
                 <Text style={styles.productTitle}>{title}</Text>
               </View>
-              <Text style={styles.productQuantity}>Quantity Available: {availableQuantity}</Text>
+              <Text style={styles.productQuantity}>Quantity: {availableQuantity}</Text>
               <Text style={styles.productDescription}>{content}</Text>
             </View>
 
             <View style={styles.userDetails}>
-              <Text style={styles.userTitle}>Seller Details</Text>
+              <Text style={styles.userTitle}>Person's Details</Text>
               <Text style={styles.userDetail}>Name: {user.salername}</Text>
               <Text style={styles.userDetail}>Phone No: {user.PhoneNo}</Text>
               <Text style={styles.userDetail}>Roll No: {user.RollNo}</Text>
@@ -262,7 +260,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: 'red',
     height: 45,
     paddingVertical: 10,
     paddingHorizontal: 20,

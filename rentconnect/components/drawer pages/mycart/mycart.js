@@ -38,7 +38,7 @@ export const Mycart = ({route}) => {
             component={Rent}
             initialParams={{email}}
             options={{
-              tabBarLabel: 'Cart',
+              tabBarLabel: 'Rent',
               tabBarIcon: ({ color }) => (
                 <Image source={cartImage} style={styles.cartimage}/>
               ),

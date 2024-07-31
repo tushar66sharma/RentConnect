@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -10,11 +10,20 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-  PermissionsAndroid,
-  Platform,
 } from 'react-native';
-import { SendDirectSms } from 'react-native-send-direct-sms';
+import {useNavigation} from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
+export type RootStackParamList = {
+  Order: {title:string;
+    content:string;
+    flag:boolean;
+    imageSource?:ImageSourcePropType;
+    email:string;
+    quantity:number;
+    name:string;
+  };
+};
 
 interface CustomCardProps {
   title: string;
@@ -28,7 +37,7 @@ interface CustomCardProps {
   quantity:number;
 }
 
-export const CustomCard1: React.FC<CustomCardProps> = ({
+export const CustomCard3: React.FC<CustomCardProps> = ({
   title,
   content,
   flag,
@@ -36,87 +45,47 @@ export const CustomCard1: React.FC<CustomCardProps> = ({
   imageSource,
   email,
   name,
-  quantity
+  quantity,
 }) => {
 
-
-  const userdetails=[{
-    mobileNumber:'5554',
-  }];
-  const user=userdetails[0];
-
-  const [mobileNumber, setMobileNumber] = React.useState('');
-  const [bodySMS, setBodySMS] = React.useState('');
-
-  useEffect(() => {
-    setMobileNumber(user.mobileNumber);
-    setBodySMS("Your item has been withdrawn ");
-  }, [user]);
-
-  const requestSmsPermission = async () => {
-    try {
-      if (Platform.OS === 'android') {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.SEND_SMS,
-          {
-            title: 'SMS Permission',
-            message: 'This app needs access to your SMS to send messages.',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          }
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('SMS permission granted');
-          sendSmsData(mobileNumber, bodySMS);
-        } else {
-          console.log('SMS permission denied');
-        }
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
-
-
-  function sendSmsData(mobileNumber: string, bodySMS: string) {
-    SendDirectSms(mobileNumber, bodySMS)
-      .then((res) => console.log("SMS sent successfully", res))
-      .catch((err) => console.error("Error sending SMS", err));
-  }
-
-  const [expanded, setExpanded] = useState(false);
-
-  const handleCardPress = () => {
-    setExpanded(!expanded);
-  };
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const handleView = () => {
-    Alert.alert(`item Withdrawed...${email}`);
-    requestSmsPermission();
+    Alert.alert(`View Button Clicked...${email}`);
+    navigation.navigate('Lost and Found Details', {
+      title,
+      content,
+      flag,
+      email,
+      quantity,
+      imageSource,
+      name,
+    });
   };
 
-  const renderTextInput = () => {
-    if (flag) {
-      return (
-        <TextInput
-          style={[styles.input, {backgroundColor: '#3cb371'}]}
-          placeholder="Available"
-          editable={false}
-          placeholderTextColor="#000000"
-        />
-      );
-    } else {
-      return (
-        <TextInput
-          style={[styles.input, {backgroundColor: '#ff6347'}]}
-          placeholder="Unavailable"
-          editable={false}
-          placeholderTextColor="#000000"
-        />
-      );
-    }
-  };
+//   const renderTextInput = () => {
+//     if (flag) {
+//       return (
+//         <TextInput
+//           style={[styles.input, {backgroundColor: '#3cb371'}]}
+//           placeholder="Available"
+//           editable={false}
+//           placeholderTextColor="#000000"
+//         />
+//       );
+//     } else {
+//       return (
+//         <TextInput
+//           style={[styles.input, {backgroundColor: '#ff6347'}]}
+//           placeholder="Unavailable"
+//           editable={false}
+//           placeholderTextColor="#000000"
+//         />
+//       );
+//     }
+//   };
+
+
   return (
     <View style={[styles.card, cardStyle]}>
       {imageSource && (
@@ -136,28 +105,21 @@ export const CustomCard1: React.FC<CustomCardProps> = ({
         <Text style={styles.qnt}>Qnt : {quantity}</Text>
         </View>
         {/* <View style={styles.divider} /> */}
-        <TouchableOpacity onPress={handleCardPress}>
+        {/* <TouchableOpacity onPress={handleCardPress}>
           <Text style={styles.details_button}> Details</Text>
         </TouchableOpacity>
         {expanded && (
           <>
           <Text style={styles.content}>{content}</Text>
-          </>)}
+          </>)} */}
       </View>
       <View style={styles.box2}>
-        {renderTextInput()}
-        {flag ? (
-          <TouchableOpacity style={styles.button} onPress={handleView}>
-            <Text style={styles.buttonText}>Withdraw</Text>
-          </TouchableOpacity>
-        ) : (
-          <View style={[styles.button, styles.disabledButton]}>
-            <Text style={styles.buttonText}>Withdraw</Text>
-          </View>
-        )}
+        {/* {renderTextInput()} */}
+        <TouchableOpacity style={styles.button} onPress={handleView}>
+            <Text style={styles.buttonText}>View</Text>
+        </TouchableOpacity>
       </View>
     </View>
-
   );
 };
 
@@ -219,8 +181,8 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     flex: 1,
-    width: '100%',
-    height: '70%',
+    width:200,
+    height:200,
     borderRadius: 2,
     // marginBottom: 2,
     resizeMode: 'contain',
@@ -312,12 +274,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  disabledButton: {
+    backgroundColor: '#d3d3d3',
+  },
   box2: {
     marginTop: 5,
     marginBottom: 5,
-  },
-  disabledButton: {
-    backgroundColor: '#d3d3d3',
   },
   box1:{
     width:'100%',
@@ -326,4 +288,3 @@ const styles = StyleSheet.create({
     
   }
 });
-
