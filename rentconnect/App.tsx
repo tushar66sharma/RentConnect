@@ -1,23 +1,25 @@
 import 'react-native-gesture-handler';
 import React, {useState, useEffect} from 'react';
-import {ImageBackground, LogBox, StyleSheet, Text, View} from 'react-native';
-import {Login_page} from './components/login page/login.js';
+import {View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {enableScreens} from 'react-native-screens';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import {Login_page} from './components/login page/login.js';
 import {Main_page} from './components/main page/main_page.js';
 import {Signup} from './components/signup.js/signup.js';
 import {Settings} from './components/drawer pages/setting.js';
 import {Mycart} from './components/drawer pages/mycart/mycart.js';
 import {Notification} from './components/drawer pages/notifications.js';
-import {createDrawerNavigator} from '@react-navigation/drawer';
 import {Upload} from './components/upload_item/upload_page.js';
 import {OrderDetails_Page} from './components/order page/order_details.js';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Lost_and_Found_Details_Page} from './components/lost_and_found_details/lost_and_found_details.js';
+import {Lost_and_Found} from './components/drawer pages/lost_and_found.js';
 //import { FilterPage } from './components/searchbar & filter/filterpage.js';
 
 const Drawer = createDrawerNavigator();
-
 enableScreens();
 const Stack = createNativeStackNavigator();
 
@@ -35,9 +37,9 @@ export function Root({route}: any) {
         headerTitleAlign: 'center', // Align header title to center
       }}>
       <Drawer.Screen
-        name="Main"
+        name="Main_page"
         component={Main_page}
-        initialParams={{email}} //paasing the email as prop to the main_page
+        initialParams={{email}} //passing the email as prop to the main_page
         options={{
           headerStyle: {
             backgroundColor: '#0000cd',
@@ -47,7 +49,6 @@ export function Root({route}: any) {
           },
         }}
       />
-
       <Drawer.Screen
         name="Mycart"
         component={Mycart}
@@ -61,9 +62,10 @@ export function Root({route}: any) {
           },
         }}
       />
-      {/* <Drawer.Screen
-        name="Notification"
-        component={Notification}
+      <Drawer.Screen
+        name="Lost and Found"
+        component={Lost_and_Found}
+        initialParams={{email}}
         options={{
           headerStyle: {
             backgroundColor: '#0000cd',
@@ -72,7 +74,7 @@ export function Root({route}: any) {
             color: 'white', // Set the desired text color
           },
         }}
-      /> */}
+      />
       <Drawer.Screen
         name="Settings"
         component={Settings}
@@ -147,8 +149,20 @@ function App(): React.JSX.Element {
             }}
           />
           <Stack.Screen
-            name="Order"
+            name="OrderDetails_Page"
             component={OrderDetails_Page}
+            options={{
+              headerStyle: {
+                backgroundColor: '#0000cd',
+              },
+              headerTitleStyle: {
+                color: 'white', // Set the desired text color
+              },
+            }}
+          />
+          <Stack.Screen
+            name="Lost and Found Details"
+            component={Lost_and_Found_Details_Page}
             options={{
               headerStyle: {
                 backgroundColor: '#0000cd',

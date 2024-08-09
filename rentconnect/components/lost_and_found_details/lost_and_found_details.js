@@ -1,32 +1,37 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
+  ImageBackground,
   StyleSheet,
   Image,
-  ImageBackground,
+  Dimensions,
   ScrollView,
   TouchableOpacity,
   Alert,
-  ActivityIndicator,
-  Dimensions,
-  TextInput,
+  Platform,
+  PermissionsAndroid,
 } from 'react-native';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {NetworkInfo} from 'react-native-network-info';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import axios from 'axios';
+import {SendDirectSms} from 'react-native-send-direct-sms';
+
 const image = require('../../components/other/image3.jpg');
+
 const {height} = Dimensions.get('window'); // Get device height
-// const serverIpAddress = require('../../Backend/app');
-export const OrderDetails_Page = ({route, navigation}) => {
-  const {itemId} = route.params;
-  const {email} = route.params;
+
+export const Lost_and_Found_Details_Page = ({route}) => {
+  // const route = useRoute();
+  const {itemId} = route.params; // Get itemId from route params
+  const navigation = useNavigation();
   const [item, setItem] = useState(null);
   const [user, setUser] = useState(null);
-  // const [buyer, setbuyer] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1);
-  const [warning, setWarning] = useState('');
+  const [mobileNumber, setMobileNumber] = React.useState('');
+  const [bodySMS, setBodySMS] = React.useState(
+    'Your item has been Reported....',
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,83 +57,45 @@ export const OrderDetails_Page = ({route, navigation}) => {
     fetchData();
   }, [itemId]);
 
-  const incrementQuantity = () => {
-    if (quantity < item.quantity) {
-      setQuantity(quantity + 1);
-      setWarning('');
-    } else {
-      setWarning('Quantity exceeds available stock');
-    }
-  };
-
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-      setWarning('');
-    } else {
-      setWarning('Quantity cannot be less than 1');
-    }
-  };
-
-  const handleQuantityChange = value => {
-    const newQuantity = parseInt(value);
-    if (!isNaN(newQuantity)) {
-      if (newQuantity >= 1 && newQuantity <= item.quantity) {
-        setQuantity(newQuantity);
-        setWarning('');
-      } else if (newQuantity < 1) {
-        setWarning('Quantity cannot be less than 1');
-      } else {
-        setWarning('Quantity exceeds available stock');
-      }
-    }
-  };
-
-  NetworkInfo.getIPAddress().then(ipAddress => {
-    console.log(ipAddress);
-  });
-
-  const handleOrderButtonClick = async () => {
-    // console.log(buyer._id);
+  const requestSmsPermission = async () => {
     try {
-      const token = await AsyncStorage.getItem('token');
-
-      const response = await axios.patch(
-        `http://172.27.39.25:5001/order/${itemId}/update`,
-        {orderQuantity: quantity}, // Correct key names
-        {
-          headers: {
-            Authorization: token, // Added 'Bearer ' prefix
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.SEND_SMS,
+          {
+            title: 'SMS Permission',
+            message: 'This app needs access to your SMS to send messages.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
           },
-        },
-      );
-
-      if (response.status === 200) {
-        Alert.alert('Success', 'Order placed successfully');
-        navigation.navigate('Main_page', {refresh: true}); // Pass a refresh flag to update the Main Page
-      } else {
-        Alert.alert('Failed', 'Failed to place order. Please try again.');
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('SMS permission granted');
+          sendSmsData('5554', bodySMS);
+        } else {
+          console.log('SMS permission denied');
+        }
       }
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'Failed to place order. Please try again.');
+    } catch (err) {
+      console.warn(err);
     }
   };
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
+  function sendSmsData(mobileNumber, bodySMS) {
+    SendDirectSms(mobileNumber, bodySMS)
+      .then(res => console.log('SMS sent successfully', res))
+      .catch(err => console.error('Error sending SMS', err));
   }
 
+  const handleView = email => {
+    Alert.alert(`Report Button Clicked...${email}`);
+    requestSmsPermission();
+    navigation.navigate('Lost and Found');
+  };
+
   if (!item || !user) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>Failed to load data</Text>
-      </View>
-    );
+    return <Text>Loading...</Text>;
   }
 
   return (
@@ -144,45 +111,25 @@ export const OrderDetails_Page = ({route, navigation}) => {
           </View>
 
           <View style={styles.detailsContainer}>
-            <View style={styles.quantityContainer}>
-              <TouchableOpacity
-                style={styles.counterButton}
-                onPress={decrementQuantity}>
-                <Text style={styles.counterButtonText}>-</Text>
-              </TouchableOpacity>
-              <TextInput
-                style={styles.quantityDisplay}
-                value={quantity.toString()}
-                onChangeText={handleQuantityChange}
-                keyboardType="numeric"
-              />
-              <TouchableOpacity
-                style={styles.counterButton}
-                onPress={incrementQuantity}>
-                <Text style={styles.counterButtonText}>+</Text>
-              </TouchableOpacity>
-            </View>
-            {warning ? <Text style={styles.warningText}>{warning}</Text> : null}
-
             <TouchableOpacity
               style={styles.button}
-              onPress={handleOrderButtonClick}>
-              <Text style={styles.buttonText}>Order</Text>
+              onPress={() => handleView(user.email)}>
+              <Text style={styles.buttonText}>Report</Text>
             </TouchableOpacity>
 
             <View style={styles.itemDetails}>
               <View style={styles.box1}>
                 <Text style={styles.productName}>{item.name}</Text>
-                <Text style={styles.productPrice}>Price: ₹{item.price}</Text>
+                <Text style={styles.productTitle}>{item.title}</Text>
               </View>
               <Text style={styles.productQuantity}>
-                Quantity Available: {item.quantity}
+                Quantity: {item.quantity}
               </Text>
               <Text style={styles.productDescription}>{item.description}</Text>
             </View>
 
             <View style={styles.userDetails}>
-              <Text style={styles.userTitle}>Seller Details</Text>
+              <Text style={styles.userTitle}>Person's Details</Text>
               <Text style={styles.userDetail}>Name: {user.name}</Text>
               <Text style={styles.userDetail}>Phone No: {user.mobileNo}</Text>
               <Text style={styles.userDetail}>Roll No: {user.rollNo}</Text>
@@ -259,9 +206,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 20,
   },
   quantityText: {
     color: 'white',
@@ -286,7 +230,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
-  productPrice: {
+  productTitle: {
     fontSize: 24,
     fontWeight: '600',
     color: 'white',
@@ -323,7 +267,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: 'red',
     height: 45,
     paddingVertical: 10,
     paddingHorizontal: 20,

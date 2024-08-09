@@ -24,7 +24,7 @@ export const Login_page = ({navigation}) => {
       password: password,
     };
     axios
-      .post('http://192.168.242.172:5001/login-user', userData)
+      .post('http://172.27.39.25:5001/login-user', userData)
       .then(res => {
         console.log(res.data);
         if (res.data.status === 'ok') {

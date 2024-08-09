@@ -24,6 +24,10 @@ const categories = [
   'Books',
   'Clothes',
   'Tools',
+  'Academic Resources',
+  'Lost and Found',
+  'Food Sharing',
+  'Other',
 ];
 
 export const Upload = ({route}) => {
@@ -66,7 +70,7 @@ export const Upload = ({route}) => {
 
     try {
       const response = await axios.post(
-        'http://192.168.242.172:5001/items',
+        'http://172.27.39.25:5001/items',
         itemData,
         {
           headers: {
@@ -76,7 +80,10 @@ export const Upload = ({route}) => {
       );
       console.log(response.data);
       Alert.alert('Item uploaded successfully!');
-      navigation.navigate('Main');
+      navigation.navigate('Mycart', {
+        screen: 'Sale',
+        params: {refresh: true},
+      });
     } catch (error) {
       console.error(error);
       Alert.alert('Failed to upload item. Please try again.');
