@@ -85,53 +85,53 @@ export const OrderDetails_Page = ({route, navigation}) => {
     }
   };
 
-  // const handleOrderButtonClick = async () => {
-  //   // console.log(buyer._id);
-  //   try {
-  //     const token = await AsyncStorage.getItem('token');
+  const handleOrderButtonClick = async () => {
+    // console.log(buyer._id);
+    try {
+      const token = await AsyncStorage.getItem('token');
 
-  //     const response = await axios.patch(
-  //       `http://172.27.39.25:5001/order/${itemId}/update`,
-  //       {orderQuantity: quantity}, // Correct key names
-  //       {
-  //         headers: {
-  //           Authorization: token, // Added 'Bearer ' prefix
-  //         },
-  //       },
-  //     );
+      const response = await axios.patch(
+        `http://172.27.39.25:5001/order/${itemId}/update`,
+        {orderQuantity: quantity}, // Correct key names
+        {
+          headers: {
+            Authorization: token, // Added 'Bearer ' prefix
+          },
+        },
+      );
 
-  //     if (response.status === 200) {
-  //       Alert.alert('Success', 'Order placed successfully');
-  //       navigation.navigate('Main_page', {refresh: true}); // Pass a refresh flag to update the Main Page
-  //     } else {
-  //       Alert.alert('Failed', 'Failed to place order. Please try again.');
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     Alert.alert('Error', 'Failed to place order. Please try again.');
-  //   }
-  // };
-
-  function successCallback(data) {
-    console.log('success', data);
-  }
-
-  function failureCallback(data) {
-    console.log('payment failed', data);
-  }
-
-  const handleOrderButtonClick = () => {
-    RNUpiPayment.initializePayment(
-      {
-        vpa: 'bvsharma31july@okicici', // or can be john@ybl or mobileNo@upi
-        payeeName: 'Bhavana Sharma',
-        amount: '1',
-        transactionRef: 'aasf-332-aoei-fn',
-      },
-      successCallback,
-      failureCallback,
-    );
+      if (response.status === 200) {
+        Alert.alert('Success', 'Order placed successfully');
+        navigation.navigate('Main_page', {refresh: true}); // Pass a refresh flag to update the Main Page
+      } else {
+        Alert.alert('Failed', 'Failed to place order. Please try again.');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to place order. Please try again.');
+    }
   };
+
+  // function successCallback(data) {
+  //   console.log('success', data);
+  // }
+
+  // function failureCallback(data) {
+  //   console.log('payment failed', data);
+  // }
+
+  // const handleOrderButtonClick = () => {
+  //   RNUpiPayment.initializePayment(
+  //     {
+  //       vpa: 'bvsharma31july@okicici', // or can be john@ybl or mobileNo@upi
+  //       payeeName: 'Bhavana Sharma',
+  //       amount: '1',
+  //       transactionRef: 'aasf-332-aoei-fn',
+  //     },
+  //     successCallback,
+  //     failureCallback,
+  //   );
+  // };
 
   if (loading) {
     return (
@@ -185,7 +185,7 @@ export const OrderDetails_Page = ({route, navigation}) => {
             <TouchableOpacity
               style={styles.button}
               onPress={handleOrderButtonClick}>
-              <Text style={styles.buttonText}>Pay Now</Text>
+              <Text style={styles.buttonText}>Order</Text>
             </TouchableOpacity>
 
             <View style={styles.itemDetails}>
