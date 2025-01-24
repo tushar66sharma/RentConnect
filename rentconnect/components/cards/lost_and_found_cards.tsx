@@ -1,40 +1,50 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   View,
   Text,
-  TextInput,
   StyleSheet,
   Image,
-  ImageBackground,
   ImageSourcePropType,
-  ScrollView,
   TouchableOpacity,
   Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 export type RootStackParamList = {
-  Order: {title:string;
-    content:string;
-    flag:boolean;
-    imageSource?:ImageSourcePropType;
-    email:string;
-    quantity:number;
-    name:string;
+  Lost_and_Found_Details: {
+    title: string;
+    content: string;
+    flag: boolean;
+    imageSource?: ImageSourcePropType;
+    email: string;
+    quantity: number;
+    name: string;
+    itemId: string;
+  };
+  'Lost and Found Details': {
+    title: string;
+    content: string;
+    flag: boolean;
+    email: string;
+    quantity: number;
+    imageSource?: ImageSourcePropType;
+    name: string;
+    itemId: string;
   };
 };
 
 interface CustomCardProps {
   title: string;
   content: string;
-  flag:boolean;
-  //children?: ReactNode;
+  flag: boolean;
   cardStyle?: object;
   imageSource?: ImageSourcePropType;
-  email:string;
-  name:string;
-  quantity:number;
+  email: string;
+  name: string;
+  quantity: number;
+  itemId: string;
+
 }
 
 export const CustomCard3: React.FC<CustomCardProps> = ({
@@ -46,8 +56,8 @@ export const CustomCard3: React.FC<CustomCardProps> = ({
   email,
   name,
   quantity,
-}) => {
-
+  itemId,
+} : CustomCardProps) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const handleView = () => {
@@ -60,8 +70,35 @@ export const CustomCard3: React.FC<CustomCardProps> = ({
       quantity,
       imageSource,
       name,
+      itemId,
     });
   };
+  return (
+    <View style={[styles.card, cardStyle]}>
+      {imageSource && (
+        <View style={styles.cardImageContainer}>
+          <Image
+            source={imageSource}
+            style={styles.cardImage}
+            resizeMode="cover"
+          />
+        </View>
+      )}
+      <View style={styles.box1}>
+        <Text style={styles.name}>{name}</Text>
+        <View style={styles.title_qnt}>
+          <Text style={styles.title}>Price: {title}</Text>
+          <Text style={styles.qnt}>Qnt : {quantity}</Text>
+        </View>
+      </View>
+      <View style={styles.box2}>
+        <TouchableOpacity style={styles.button} onPress={handleView}>
+          <Text style={styles.buttonText}>View</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
 
 //   const renderTextInput = () => {
 //     if (flag) {
@@ -84,44 +121,6 @@ export const CustomCard3: React.FC<CustomCardProps> = ({
 //       );
 //     }
 //   };
-
-
-  return (
-    <View style={[styles.card, cardStyle]}>
-      {imageSource && (
-        <View style={styles.cardImageContainer}>
-          <Image
-            source={imageSource}
-            style={styles.cardImage}
-            resizeMode="cover"
-          />
-        </View>
-      )}
-      <View style={styles.box1}>
-        <Text style={styles.name}>{name}</Text>
-        {/* <View style={styles.divider} /> */}
-        <View style={styles.title_qnt}>
-        <Text style={styles.title}>Price: {title}</Text>
-        <Text style={styles.qnt}>Qnt : {quantity}</Text>
-        </View>
-        {/* <View style={styles.divider} /> */}
-        {/* <TouchableOpacity onPress={handleCardPress}>
-          <Text style={styles.details_button}> Details</Text>
-        </TouchableOpacity>
-        {expanded && (
-          <>
-          <Text style={styles.content}>{content}</Text>
-          </>)} */}
-      </View>
-      <View style={styles.box2}>
-        {/* {renderTextInput()} */}
-        <TouchableOpacity style={styles.button} onPress={handleView}>
-            <Text style={styles.buttonText}>View</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   background: {
@@ -176,59 +175,58 @@ const styles = StyleSheet.create({
     width: '100%',
     // height:'60%',
     overflow: 'hidden',
-    justifyContent: 'center', 
-    alignItems: 'center', 
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   cardImage: {
     flex: 1,
-    width:200,
-    height:200,
+    width: 200,
+    height: 200,
     borderRadius: 2,
     // marginBottom: 2,
     resizeMode: 'contain',
   },
   content: {
-    fontSize:16,
-    color:'black',
-    alignSelf:'center'
+    fontSize: 16,
+    color: 'black',
+    alignSelf: 'center',
   },
-  details_button:{
-    fontSize:16,
-    color:'blue',
-    alignSelf:'center'
+  details_button: {
+    fontSize: 16,
+    color: 'blue',
+    alignSelf: 'center',
   },
-  name:{
+  name: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 5,
     color: 'black',
-    alignSelf:'center',
-
+    alignSelf: 'center',
   },
-  title_qnt:{
-    flexDirection:'row',
-    justifyContent:'space-between',
-    marginBottom:4,
-    marginTop:4,
+  title_qnt: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+    marginTop: 4,
   },
   title: {
     fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 2,
     color: 'black',
-    marginLeft:4,
+    marginLeft: 4,
   },
-  qnt:{
+  qnt: {
     fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 2,
     color: 'black',
-    marginRight:8,
+    marginRight: 8,
   },
   divider: {
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
-    marginBottom:4,
+    marginBottom: 4,
   },
   input: {
     height: 35,
@@ -236,15 +234,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     padding: 5,
-    width:150,
+    width: 150,
     backgroundColor: '#3cb371',
     shadowColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
     textAlign: 'center',
-    fontSize:20,
-    fontWeight:'bold',
+    fontSize: 20,
+    fontWeight: 'bold',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -254,12 +252,12 @@ const styles = StyleSheet.create({
     elevation: 5,
     // marginLeft: 3,
     // marginRight: 3,
-    marginBottom:5,
+    marginBottom: 5,
   },
-  
+
   button: {
     backgroundColor: '#0000cd',
-    height:35,
+    height: 35,
     padding: 5,
     width: 150,
     // marginTop: 5,
@@ -281,10 +279,9 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
   },
-  box1:{
-    width:'100%',
+  box1: {
+    width: '100%',
     // alignContent:'center',
     // alignItems:'center'
-    
-  }
+  },
 });

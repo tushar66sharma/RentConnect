@@ -1,5 +1,5 @@
 
-import React, { useState ,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,41 +10,53 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-  TextInput,
-  PermissionsAndroid,
   Platform,
+  PermissionsAndroid,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { SendDirectSms } from 'react-native-send-direct-sms';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import axios from 'axios';
+import {SendDirectSms} from 'react-native-send-direct-sms';
 
 const image = require('../../components/other/image3.jpg');
 
-const { height } = Dimensions.get('window'); // Get device height
+const {height} = Dimensions.get('window'); // Get device height
 
-// Example User Data
-
-
-
-export const Lost_and_Found_Details_Page = ({ route }) => {
-  const { title, content, flag, imageSource, email, quantity: availableQuantity, name } = route.params;
+export const Lost_and_Found_Details_Page = ({route}) => {
+  // const route = useRoute();
+  const {itemId} = route.params; // Get itemId from route params
   const navigation = useNavigation();
-  const Userdata = [
-    {
-      salername: 'Tushar',
-      PhoneNo: '7456945121',
-      RollNo: '22BSM062',
-      Emailid: 'example1@email.com',
-    },
-  ];
-  const user = Userdata[0];
+  const [item, setItem] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [mobileNumber, setMobileNumber] = React.useState('');
-  const [bodySMS, setBodySMS] = React.useState('');
+  const [bodySMS, setBodySMS] = React.useState(
+    'Your item has been Reported....',
+  );
 
   useEffect(() => {
-    setMobileNumber(user.PhoneNo);
-    setBodySMS("Your item has been Reported....");
-  }, [user]);
+    const fetchData = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const response = await axios.get(
+          `http://172.27.39.25:5001/order-details/${itemId}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          },
+        );
+        setItem(response.data.item);
+        setUser(response.data.user);
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Error', 'Failed to fetch data');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [itemId]);
   const requestSmsPermission = async () => {
     try {
       if (Platform.OS === 'android') {
@@ -56,11 +68,11 @@ export const Lost_and_Found_Details_Page = ({ route }) => {
             buttonNeutral: 'Ask Me Later',
             buttonNegative: 'Cancel',
             buttonPositive: 'OK',
-          }
+          },
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           console.log('SMS permission granted');
-          sendSmsData(mobileNumber, bodySMS);
+          sendSmsData('5554', bodySMS);
         } else {
           console.log('SMS permission denied');
         }
@@ -70,24 +82,21 @@ export const Lost_and_Found_Details_Page = ({ route }) => {
     }
   };
 
-
   function sendSmsData(mobileNumber, bodySMS) {
     SendDirectSms(mobileNumber, bodySMS)
-      .then((res) => console.log("SMS sent successfully", res))
-      .catch((err) => console.error("Error sending SMS", err));
+      .then(res => console.log('SMS sent successfully', res))
+      .catch(err => console.error('Error sending SMS', err));
   }
 
-  
-
-//   const [quantity, setQuantity] = useState(1);
-//   const [warning, setWarning] = useState('');
-
-  const handleView = (email) => {
+  const handleView = email => {
     Alert.alert(`Report Button Clicked...${email}`);
     requestSmsPermission();
     navigation.navigate('Lost and Found');
   };
 
+  if (!item || !user) {
+    return <Text>Loading...</Text>;
+  }
 //   const incrementQuantity = () => {
 //     if (quantity < availableQuantity) {
 //       setQuantity(quantity + 1);
@@ -129,49 +138,38 @@ export const Lost_and_Found_Details_Page = ({ route }) => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.cardImageContainer}>
             <Image
-              source={imageSource}
+
+              source={{uri: item.imageUrl}}
               style={styles.cardImage}
               resizeMode="cover"
             />
           </View>
 
           <View style={styles.detailsContainer}>
-            {/* <View style={styles.quantityContainer}>
-              <TouchableOpacity style={styles.counterButton} onPress={decrementQuantity}>
-                <Text style={styles.counterButtonText}>-</Text>
-              </TouchableOpacity>
-              <View style={styles.quantityDisplay}>
-                <Text style={styles.quantityText}>{quantity}</Text>
-              </View>
-              <TouchableOpacity style={styles.counterButton} onPress={incrementQuantity}>
-                <Text style={styles.counterButtonText}>+</Text>
-              </TouchableOpacity>
-            </View> */}
-
-            {/* {warning ? <Text style={styles.warningText}>{warning}</Text> : null} */}
-
             <TouchableOpacity
               style={styles.button}
-              onPress={() => handleView(email)}
-            >
+              onPress={() => handleView(user.email)}>
               <Text style={styles.buttonText}>Report</Text>
             </TouchableOpacity>
 
             <View style={styles.itemDetails}>
               <View style={styles.box1}>
-                <Text style={styles.productName}>{name}</Text>
-                <Text style={styles.productTitle}>{title}</Text>
+                <Text style={styles.productName}>{item.name}</Text>
+                <Text style={styles.productTitle}>{item.title}</Text>
               </View>
-              <Text style={styles.productQuantity}>Quantity: {availableQuantity}</Text>
-              <Text style={styles.productDescription}>{content}</Text>
+              <Text style={styles.productQuantity}>
+                Quantity: {item.quantity}
+              </Text>
+              <Text style={styles.productDescription}>{item.description}</Text>
             </View>
 
             <View style={styles.userDetails}>
               <Text style={styles.userTitle}>Person's Details</Text>
-              <Text style={styles.userDetail}>Name: {user.salername}</Text>
-              <Text style={styles.userDetail}>Phone No: {user.PhoneNo}</Text>
-              <Text style={styles.userDetail}>Roll No: {user.RollNo}</Text>
-              <Text style={styles.userDetail}>Email: {user.Emailid}</Text>
+
+              <Text style={styles.userDetail}>Name: {user.name}</Text>
+              <Text style={styles.userDetail}>Phone No: {user.mobileNo}</Text>
+              <Text style={styles.userDetail}>Roll No: {user.rollNo}</Text>
+              <Text style={styles.userDetail}>Email: {user.email}</Text>
             </View>
           </View>
         </ScrollView>
@@ -212,7 +210,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     elevation: 6,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.3,
     shadowRadius: 6,
     marginTop: 0, // Adjust to overlap with card image
@@ -319,4 +317,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-

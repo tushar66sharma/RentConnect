@@ -15,20 +15,21 @@ import {
 } from 'react-native';
 import { SendDirectSms } from 'react-native-send-direct-sms';
 
-
 interface CustomCardProps {
+  id: string;
   title: string;
   content: string;
-  flag:boolean;
-  //children?: ReactNode;
+  flag: boolean;
   cardStyle?: object;
   imageSource?: ImageSourcePropType;
-  email:string;
-  name:string;
-  quantity:number;
+  email: string;
+  name: string;
+  quantity: number;
+  onWithdraw: (id: string) => void;
 }
 
 export const CustomCard1: React.FC<CustomCardProps> = ({
+  id,
   title,
   content,
   flag,
@@ -36,55 +37,9 @@ export const CustomCard1: React.FC<CustomCardProps> = ({
   imageSource,
   email,
   name,
-  quantity
+  quantity,
+  onWithdraw,
 }) => {
-
-
-  const userdetails=[{
-    mobileNumber:'5554',
-  }];
-  const user=userdetails[0];
-
-  const [mobileNumber, setMobileNumber] = React.useState('');
-  const [bodySMS, setBodySMS] = React.useState('');
-
-  useEffect(() => {
-    setMobileNumber(user.mobileNumber);
-    setBodySMS("Your item has been withdrawn ");
-  }, [user]);
-
-  const requestSmsPermission = async () => {
-    try {
-      if (Platform.OS === 'android') {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.SEND_SMS,
-          {
-            title: 'SMS Permission',
-            message: 'This app needs access to your SMS to send messages.',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          }
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('SMS permission granted');
-          sendSmsData(mobileNumber, bodySMS);
-        } else {
-          console.log('SMS permission denied');
-        }
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
-
-
-  function sendSmsData(mobileNumber: string, bodySMS: string) {
-    SendDirectSms(mobileNumber, bodySMS)
-      .then((res) => console.log("SMS sent successfully", res))
-      .catch((err) => console.error("Error sending SMS", err));
-  }
-
   const [expanded, setExpanded] = useState(false);
 
   const handleCardPress = () => {
@@ -92,8 +47,8 @@ export const CustomCard1: React.FC<CustomCardProps> = ({
   };
 
   const handleView = () => {
-    Alert.alert(`item Withdrawed...${email}`);
-    requestSmsPermission();
+    onWithdraw(id);
+    Alert.alert(`Item Withdrawn...${email}`);
   };
 
   const renderTextInput = () => {
@@ -117,6 +72,7 @@ export const CustomCard1: React.FC<CustomCardProps> = ({
       );
     }
   };
+
   return (
     <View style={[styles.card, cardStyle]}>
       {imageSource && (
@@ -130,19 +86,18 @@ export const CustomCard1: React.FC<CustomCardProps> = ({
       )}
       <View style={styles.box1}>
         <Text style={styles.name}>{name}</Text>
-        {/* <View style={styles.divider} /> */}
         <View style={styles.title_qnt}>
-        <Text style={styles.title}>Price: {title}</Text>
-        <Text style={styles.qnt}>Qnt : {quantity}</Text>
+          <Text style={styles.title}>Price: {title}</Text>
+          <Text style={styles.qnt}>Qnt: {quantity}</Text>
         </View>
-        {/* <View style={styles.divider} /> */}
         <TouchableOpacity onPress={handleCardPress}>
           <Text style={styles.details_button}> Details</Text>
         </TouchableOpacity>
         {expanded && (
           <>
-          <Text style={styles.content}>{content}</Text>
-          </>)}
+            <Text style={styles.content}>{content}</Text>
+          </>
+        )}
       </View>
       <View style={styles.box2}>
         {renderTextInput()}
@@ -157,7 +112,6 @@ export const CustomCard1: React.FC<CustomCardProps> = ({
         )}
       </View>
     </View>
-
   );
 };
 
@@ -179,7 +133,6 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     width: '95%',
-    // backgroundColor:'none' ,
     borderRadius: 25,
     borderWidth: 2,
     borderColor: '#ccc',
@@ -191,19 +144,15 @@ const styles = StyleSheet.create({
     height: 40,
     color: 'white',
   },
-
   card: {
     width: '48%',
-    // flex: 1,
     borderWidth: 5,
     borderRadius: 5,
-    // borderColor:'#928987',
     borderColor: '#000000',
     padding: 2,
     paddingBottom: 6,
     margin: 3.2,
     marginBottom: 15,
-    //marginLeft:1,
     maxWidth: 200,
     height: 330,
     backgroundColor: 'white',
@@ -212,61 +161,58 @@ const styles = StyleSheet.create({
   cardImageContainer: {
     flex: 1,
     width: '100%',
-    // height:'60%',
     overflow: 'hidden',
-    justifyContent: 'center', 
-    alignItems: 'center', 
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   cardImage: {
     flex: 1,
     width: '100%',
     height: '70%',
     borderRadius: 2,
-    // marginBottom: 2,
     resizeMode: 'contain',
   },
   content: {
-    fontSize:16,
-    color:'black',
-    alignSelf:'center'
+    fontSize: 16,
+    color: 'black',
+    alignSelf: 'center',
   },
-  details_button:{
-    fontSize:16,
-    color:'blue',
-    alignSelf:'center'
+  details_button: {
+    fontSize: 16,
+    color: 'blue',
+    alignSelf: 'center',
   },
-  name:{
+  name: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 5,
     color: 'black',
-    alignSelf:'center',
-
+    alignSelf: 'center',
   },
-  title_qnt:{
-    flexDirection:'row',
-    justifyContent:'space-between',
-    marginBottom:4,
-    marginTop:4,
+  title_qnt: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+    marginTop: 4,
   },
   title: {
     fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 2,
     color: 'black',
-    marginLeft:4,
+    marginLeft: 4,
   },
-  qnt:{
+  qnt: {
     fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 2,
     color: 'black',
-    marginRight:8,
+    marginRight: 8,
   },
   divider: {
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
-    marginBottom:4,
+    marginBottom: 4,
   },
   input: {
     height: 35,
@@ -274,15 +220,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     padding: 5,
-    width:150,
+    width: 150,
     backgroundColor: '#3cb371',
     shadowColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
     textAlign: 'center',
-    fontSize:20,
-    fontWeight:'bold',
+    fontSize: 20,
+    fontWeight: 'bold',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -290,21 +236,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    // marginLeft: 3,
-    // marginRight: 3,
-    marginBottom:5,
+    marginBottom: 5,
   },
-  
   button: {
     backgroundColor: '#0000cd',
-    height:35,
+    height: 35,
     padding: 5,
     width: 150,
-    // marginTop: 5,
     borderRadius: 5,
-    // marginLeft:5,
-    // marginRight: 5,
-    // marginBottom: 5,
   },
   buttonText: {
     color: 'white',
@@ -319,11 +258,7 @@ const styles = StyleSheet.create({
   disabledButton: {
     backgroundColor: '#d3d3d3',
   },
-  box1:{
-    width:'100%',
-    // alignContent:'center',
-    // alignItems:'center'
-    
-  }
+  box1: {
+    width: '100%',
+  },
 });
-

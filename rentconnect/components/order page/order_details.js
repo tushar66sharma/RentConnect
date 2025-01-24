@@ -1,52 +1,61 @@
 
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
-  ImageBackground,
   StyleSheet,
   Image,
-  Dimensions,
+  ImageBackground,
   ScrollView,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
+  Dimensions,
   TextInput,
-  PermissionsAndroid,
-  Platform,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-
-
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {NetworkInfo} from 'react-native-network-info';
+import RNUpiPayment from 'react-native-upi-payment';
 const image = require('../../components/other/image3.jpg');
-
-const { height } = Dimensions.get('window'); // Get device height
-
-// Example User Data
-const Userdata = [
-  {
-    salername: 'Tushar',
-    PhoneNo: 7456945121,
-    RollNo: '22BSM062',
-    Emailid: 'example1@email.com',
-  },
-];
-
-
-
-export const OrderDetails_Page = ({ route }) => {
-  const { title, content, flag, imageSource, email, quantity: availableQuantity, name } = route.params;
-  const navigation = useNavigation();
-
+const {height} = Dimensions.get('window'); // Get device height
+// const serverIpAddress = require('../../Backend/app');
+export const OrderDetails_Page = ({route, navigation}) => {
+  const {itemId} = route.params;
+  const {email} = route.params;
+  const [item, setItem] = useState(null);
+  const [user, setUser] = useState(null);
+  // const [buyer, setbuyer] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [warning, setWarning] = useState('');
 
-  const handleView = (email) => {
-    Alert.alert(`Order Button Clicked...${email}`);
-    navigation.navigate('Main');
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const response = await axios.get(
+          `http://172.27.39.25:5001/order-details/${itemId}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          },
+        );
+        setItem(response.data.item);
+        setUser(response.data.user);
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Error', 'Failed to fetch data');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [itemId]);
 
   const incrementQuantity = () => {
-    if (quantity < availableQuantity) {
+    if (quantity < item.quantity) {
       setQuantity(quantity + 1);
       setWarning('');
     } else {
@@ -63,10 +72,10 @@ export const OrderDetails_Page = ({ route }) => {
     }
   };
 
-  const handleQuantityChange = (value) => {
+  const handleQuantityChange = value => {
     const newQuantity = parseInt(value);
     if (!isNaN(newQuantity)) {
-      if (newQuantity >= 1 && newQuantity <= availableQuantity) {
+      if (newQuantity >= 1 && newQuantity <= item.quantity) {
         setQuantity(newQuantity);
         setWarning('');
       } else if (newQuantity < 1) {
@@ -77,8 +86,68 @@ export const OrderDetails_Page = ({ route }) => {
     }
   };
 
-  // Assuming there's only one user data in the array
-  const user = Userdata[0];
+  // const handleOrderButtonClick = async () => {
+  //   // console.log(buyer._id);
+  //   try {
+  //     const token = await AsyncStorage.getItem('token');
+
+  //     const response = await axios.patch(
+  //       `http://172.27.39.25:5001/order/${itemId}/update`,
+  //       {orderQuantity: quantity}, // Correct key names
+  //       {
+  //         headers: {
+  //           Authorization: token, // Added 'Bearer ' prefix
+  //         },
+  //       },
+  //     );
+  //     if (response.status === 200) {
+  //       Alert.alert('Success', 'Order placed successfully');
+  //       navigation.navigate('Main_page', {refresh: true}); // Pass a refresh flag to update the Main Page
+  //     } else {
+  //       Alert.alert('Failed', 'Failed to place order. Please try again.');
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     Alert.alert('Error', 'Failed to place order. Please try again.');
+  //   }
+  // };
+
+  function successCallback(data) {
+    console.log('success', data);
+  }
+
+  function failureCallback(data) {
+    console.log('payment failed', data);
+  }
+
+  const handleOrderButtonClick = () => {
+    RNUpiPayment.initializePayment(
+      {
+        vpa: 'bvsharma31july@okicici', // or can be john@ybl or mobileNo@upi
+        payeeName: 'Bhavana Sharma',
+        amount: '1',
+        transactionRef: 'aasf-332-aoei-fn',
+      },
+      successCallback,
+      failureCallback,
+    );
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (!item || !user) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>Failed to load data</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -86,7 +155,7 @@ export const OrderDetails_Page = ({ route }) => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.cardImageContainer}>
             <Image
-              source={imageSource}
+              source={{uri: item.imageUrl}}
               style={styles.cardImage}
               resizeMode="cover"
             />
@@ -94,41 +163,49 @@ export const OrderDetails_Page = ({ route }) => {
 
           <View style={styles.detailsContainer}>
             <View style={styles.quantityContainer}>
-              <TouchableOpacity style={styles.counterButton} onPress={decrementQuantity}>
+              <TouchableOpacity
+                style={styles.counterButton}
+                onPress={decrementQuantity}>
                 <Text style={styles.counterButtonText}>-</Text>
               </TouchableOpacity>
-              <View style={styles.quantityDisplay}>
-                <Text style={styles.quantityText}>{quantity}</Text>
-              </View>
-              <TouchableOpacity style={styles.counterButton} onPress={incrementQuantity}>
+              <TextInput
+                style={styles.quantityDisplay}
+                value={quantity.toString()}
+                onChangeText={handleQuantityChange}
+                keyboardType="numeric"
+              />
+              <TouchableOpacity
+                style={styles.counterButton}
+                onPress={incrementQuantity}>
                 <Text style={styles.counterButtonText}>+</Text>
               </TouchableOpacity>
             </View>
-
             {warning ? <Text style={styles.warningText}>{warning}</Text> : null}
 
             <TouchableOpacity
               style={styles.button}
-              onPress={() => handleView(email)}
-            >
-              <Text style={styles.buttonText}>Order</Text>
+              onPress={handleOrderButtonClick}>
+              <Text style={styles.buttonText}>Pay Now</Text>
             </TouchableOpacity>
 
             <View style={styles.itemDetails}>
               <View style={styles.box1}>
-                <Text style={styles.productName}>{name}</Text>
-                <Text style={styles.productTitle}>{title}</Text>
+                <Text style={styles.productName}>{item.name}</Text>
+                <Text style={styles.productPrice}>Price: ₹{item.price}</Text>
               </View>
-              <Text style={styles.productQuantity}>Quantity Available: {availableQuantity}</Text>
-              <Text style={styles.productDescription}>{content}</Text>
+
+              <Text style={styles.productQuantity}>
+                Quantity Available: {item.quantity}
+              </Text>
+              <Text style={styles.productDescription}>{item.description}</Text>
             </View>
 
             <View style={styles.userDetails}>
               <Text style={styles.userTitle}>Seller Details</Text>
-              <Text style={styles.userDetail}>Name: {user.salername}</Text>
-              <Text style={styles.userDetail}>Phone No: {user.PhoneNo}</Text>
-              <Text style={styles.userDetail}>Roll No: {user.RollNo}</Text>
-              <Text style={styles.userDetail}>Email: {user.Emailid}</Text>
+              <Text style={styles.userDetail}>Name: {user.name}</Text>
+              <Text style={styles.userDetail}>Phone No: {user.mobileNo}</Text>
+              <Text style={styles.userDetail}>Roll No: {user.rollNo}</Text>
+              <Text style={styles.userDetail}>Email: {user.email}</Text>
             </View>
           </View>
         </ScrollView>
@@ -201,6 +278,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 20,
   },
   quantityText: {
     color: 'white',
@@ -225,7 +306,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
-  productTitle: {
+  productPrice: {
     fontSize: 24,
     fontWeight: '600',
     color: 'white',

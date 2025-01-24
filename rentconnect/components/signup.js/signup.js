@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import axios from 'axios';
 import {
   ImageBackground,
   StyleSheet,
@@ -6,6 +7,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
@@ -25,14 +27,12 @@ export const Signup = () => {
   const [errors, setErrors] = useState({});
 
   const handleInputChange = (field, text) => {
-    setFormData(prevData => ({ ...prevData, [field]: text }));
-    setErrors(prevErrors => ({ ...prevErrors, [field]: '' })); // Clear error for the field on change
+    setFormData(prevData => ({...prevData, [field]: text}));
+    setErrors(prevErrors => ({...prevErrors, [field]: ''})); // Clear error for the field on change
   };
 
   const handleSubmission = () => {
-    // Access the values from formData object
     const {email, password, name, mobileNo, rollNo} = formData;
-
     const newErrors = {};
     if (!email) newErrors.email = 'Email is required';
     if (!password) newErrors.password = 'Password is required';
@@ -43,83 +43,97 @@ export const Signup = () => {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
-      // Process the data as needed
-
-      // Temporary array to store the form data
-      const formDataArray = [
-        { field: 'Email', value: email },
-        { field: 'Password', value: password },
-        { field: 'Name', value: name },
-        { field: 'Mobile No.', value: mobileNo },
-        { field: 'Roll No.', value: rollNo },
-      ];
-
-
-      // Log the data for testing purposes
-      console.log('Form Data Array:', formDataArray);
-      navigation.navigate('Login');
+      axios
+        .post('http://172.27.39.25:5001/register', formData)
+        .then(res => {
+          console.log(res.data);
+          if (res.data.status === 'ok') {
+            Alert.alert('Registration Successful!');
+            // Navigate to another screen if needed
+            navigation.navigate('Login'); // Replace "SomeScreen" with your target screen
+          } else {
+            Alert.alert(
+              'Registration Failed',
+              res.data.message || 'Unknown error',
+            );
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          Alert.alert('Error', 'An error occurred during registration');
+        });
     }
   };
 
   return (
     <GestureHandlerRootView>
-    <View style={styles.container}>
-      <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-        <ScrollView style={styles.scrollcontainer}>
-          <View style={styles.outerbox}>
-            <Text style={styles.textinsidebox}>Email</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Type here..."
-              value={formData.email}
-              onChangeText={text => handleInputChange('email', text)}
-            />
-            {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
-            <Text style={styles.textinsidebox}>Password</Text>
-            <TextInput
-              style={styles.input}
-              secureTextEntry={true}
-              placeholder="Type here..."
-              value={formData.password}
-              onChangeText={text => handleInputChange('password', text)}
-            />
-            {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
-            <Text style={styles.textinsidebox}>Name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Type here..."
-              value={formData.name}
-              onChangeText={text => handleInputChange('name', text)}
-            />
-            {errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
-            <Text style={styles.textinsidebox}>Mobile No.</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Type here..."
-              value={formData.mobileNo}
-              onChangeText={text => handleInputChange('mobileNo', text)}
-            />
-            {errors.mobileNo ? <Text style={styles.errorText}>{errors.mobileNo}</Text> : null}
-            <Text style={styles.textinsidebox}>Roll No.</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Type here..."
-              value={formData.rollNo}
-              onChangeText={text => handleInputChange('rollNo', text)}
-            />
-            {errors.rollNo ? <Text style={styles.errorText}>{errors.rollNo}</Text> : null}
+      <View style={styles.container}>
+        <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+          <ScrollView style={styles.scrollcontainer}>
+            <View style={styles.outerbox}>
+              <Text style={styles.textinsidebox}>Email</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Type here..."
+                value={formData.email}
+                onChangeText={text => handleInputChange('email', text)}
+              />
+              {errors.email ? (
+                <Text style={styles.errorText}>{errors.email}</Text>
+              ) : null}
+              <Text style={styles.textinsidebox}>Password</Text>
+              <TextInput
+                style={styles.input}
+                secureTextEntry={true}
+                placeholder="Type here..."
+                value={formData.password}
+                onChangeText={text => handleInputChange('password', text)}
+              />
+              {errors.password ? (
+                <Text style={styles.errorText}>{errors.password}</Text>
+              ) : null}
+              <Text style={styles.textinsidebox}>Name</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Type here..."
+                value={formData.name}
+                onChangeText={text => handleInputChange('name', text)}
+              />
+              {errors.name ? (
+                <Text style={styles.errorText}>{errors.name}</Text>
+              ) : null}
+              <Text style={styles.textinsidebox}>Mobile No.</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Type here..."
+                value={formData.mobileNo}
+                onChangeText={text => handleInputChange('mobileNo', text)}
+              />
+              {errors.mobileNo ? (
+                <Text style={styles.errorText}>{errors.mobileNo}</Text>
+              ) : null}
+              <Text style={styles.textinsidebox}>Roll No.</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Type here..."
+                value={formData.rollNo}
+                onChangeText={text => handleInputChange('rollNo', text)}
+              />
+              {errors.rollNo ? (
+                <Text style={styles.errorText}>{errors.rollNo}</Text>
+              ) : null}
 
-            <View style={styles.box2}>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handleSubmission}>
-                <Text style={styles.buttonText}>Submit</Text>
-              </TouchableOpacity>
+              <View style={styles.box2}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleSubmission}>
+                  <Text style={styles.buttonText}>Submit</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
           </ScrollView>
-      </ImageBackground>
-    </View>
+        </ImageBackground>
+      </View>
     </GestureHandlerRootView>
   );
 };
@@ -132,9 +146,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollcontainer:{
-    marginTop:50,
-
+  scrollcontainer: {
+    marginTop: 50,
   },
   outerbox: {
     backgroundColor: 'white',
@@ -142,7 +155,6 @@ const styles = StyleSheet.create({
     marginRight: 25,
     borderRadius: 20,
     borderColor: "'rgba(0, 0, 1)'",
-    
   },
   textinsidebox: {
     fontSize: 20,
@@ -190,4 +202,11 @@ const styles = StyleSheet.create({
     marginTop: 35,
     marginBottom: 20,
   },
+  errorText: {
+    color: 'red',
+    marginLeft: 15,
+    marginTop: 5,
+  },
 });
+
+export default Signup;

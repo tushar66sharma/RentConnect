@@ -8,36 +8,38 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const image = require('../../components/other/image3.jpg');
 
-export const Login_page = (props) => {
+export const Login_page = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    const users = [
-      {email: 'user1@example.com', password: 'password1'},
-      {email: 'user2@example.com', password: 'password2'},
-    ];
-
-    const user = users.find(
-      user => user.email === email && user.password === password,
-    );
-
-    if (user) {
-      Alert.alert('Login Successful', `Welcome back! ${email}`);
-      props.navigation.navigate('Root',{email});
-      setEmail('');
-      setPassword('');
-    } else {
-      Alert.alert(
-        'Login Failed',
-        'Invalid email or password. Please try again or sign up',
-      );
-      setEmail('');
-      setPassword('');
-    }
+    console.log(email, password);
+    const userData = {
+      email: email,
+      password: password,
+    };
+    axios
+      .post('http://172.27.39.25:5001/login-user', userData)
+      .then(res => {
+        console.log(res.data);
+        if (res.data.status === 'ok') {
+          Alert.alert('Logged In Successfully');
+          AsyncStorage.setItem('token', res.data.data);
+          AsyncStorage.setItem('email', email); // Store email locally
+          navigation.navigate('Root', {email: email}); // Navigate to Root with email parameter
+        } else {
+          Alert.alert('Login Failed', res.data.message || 'Unknown error');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        Alert.alert('Login Failed', 'An error occurred. Please try again.');
+      });
   };
 
   return (
@@ -65,13 +67,13 @@ export const Login_page = (props) => {
             onChangeText={text => setPassword(text)}
           />
           <View style={styles.box2}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText} onPress={handleLogin}>
-                Log In
-              </Text>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+              <Text style={styles.buttonText}>Log In</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText} onPress={()=>props.navigation.navigate('Signup')}>Sign Up</Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate('Signup')}>
+              <Text style={styles.buttonText}>Sign Up</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -113,7 +115,9 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     marginRight: 25,
     borderRadius: 20,
-    borderColor: "'rgba(0, 0, 1)'",
+    borderColor: 'rgba(0, 0, 1, 0.1)',
+    borderWidth: 1,
+    padding: 20,
   },
   textinsidebox: {
     fontSize: 20,
@@ -121,8 +125,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Arial',
     fontWeight: 'bold',
     marginLeft: 15,
-    marginTop: 25,
-    marginBottom: 5,
+    marginTop: 10,
   },
   input: {
     height: 40,
@@ -131,25 +134,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    marginLeft: 15,
-    marginRight: 15,
+    marginTop: 5,
+    marginBottom: 10,
   },
   button: {
     backgroundColor: 'black',
     padding: 10,
-    marginTop: 5,
     borderRadius: 5,
-    marginLeft: 15,
-    marginRight: 15,
-    marginBottom: 10,
+    marginTop: 10,
+    alignItems: 'center',
   },
   buttonText: {
     color: 'white',
@@ -158,7 +151,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   box2: {
-    marginTop: 35,
-    marginBottom: 20,
+    marginTop: 20,
   },
 });
+
+export default Login_page;

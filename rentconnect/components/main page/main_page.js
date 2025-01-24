@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -6,129 +6,87 @@ import {
   Image,
   ImageBackground,
   ScrollView,
+  TouchableOpacity,
   Alert,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {CustomCard} from '../cards/main_page_cards';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Search} from '../searchbar & filter/search_bar';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const image = require('../../components/other/image3.jpg');
 const uploadIcon = require('../../components/other/upload_image5.png');
 
-export const cardsData = [
-  {
-    name: 'Charger',
-    quantity: 1,
-    title: '₹500',
-    content: 'Laptop charger adapter 4.5mm for HP Pavilion',
-    imageSource: require('../../components/cards/assets/charger.jpg'),
-    flag: true,
-  },
-  {
-    name: 'Laptop',
-    quantity: 1,
-    title: '₹53,000',
-    content: 'HP intel i5,11th gen',
-    imageSource: require('../../components/cards/assets/laptop.jpg'),
-    flag: true,
-  },
-  {
-    name: 'Cycle',
-    quantity: 1,
-    title: '₹500',
-    content: 'Berlin Cylce',
-    imageSource: require('../../components/cards/assets/cycle.jpg'),
-    flag: false,
-  },
-  {
-    name: 'Shoes',
-    quantity: 3,
-    title: '₹500',
-    content: 'Vomero 17 Men running shoes',
-    imageSource: require('../../components/cards/assets/shoes.jpg'),
-    flag: false,
-  },
-  {
-    name: 'Book',
-    quantity: 5,
-    title: '₹ 335',
-    content: 'Griffiths',
-    imageSource: require('../../components/cards/assets/book.jpg'),
-    flag: true,
-  },
-  {
-    name: 'Medicine',
-    quantity: 15,
-    title: '₹ 50',
-    content: 'Parcetamol 50mg',
-    imageSource: require('../../components/cards/assets/medicines.jpg'),
-    flag: false,
-  },
-  {
-    name: 'Umbrella',
-    quantity: 5,
-    title: '₹ 150',
-    content: 'Umbrella',
-    imageSource: require('../../components/cards/assets/umbrella.jpg'),
-    flag: true,
-  },
-  {
-    name: 'Camera',
-    quantity: 4,
-    title: '₹800',
-    content: 'Canon Powershot SX70 20.3MP Digital Camera 65x Optical Zoom Lens',
-    imageSource: require('../../components/cards/assets/camera.jpg'),
-    flag: true,
-  },
-  {
-    name: 'Lamp',
-    quantity: 4,
-    title: '₹400',
-    content: 'Lamp',
-    imageSource: require('../../components/cards/assets/lamp.jpg'),
-    flag: false,
-  },
-  {
-    name: 'Drafter',
-    quantity: 11,
-    title: '₹150',
-    content: 'MiniDrafter',
-    imageSource: require('../../components/cards/assets/drafter.jpg'),
-    flag: true,
-  },
-  {
-    name: 'Laptop',
-    quantity: 1,
-    title: '₹150',
-    content: 'MiniDrafter',
-    imageSource: require('../../components/cards/assets/drafter.jpg'),
-    flag: true,
-  },
-  {
-    name: 'Laptop',
-    quantity: 1,
-    title: '₹400',
-    content: 'Lamp',
-    imageSource: require('../../components/cards/assets/lamp.jpg'),
-    flag: true,
-  },
-];
 
-export const Main_page = ({route}) => {
-  const {email} = route.params;
+export const Main_page = () => {
+  const route = useRoute();
   const navigation = useNavigation();
+  const {email, refresh} = route.params || {}; // Destructure email and refresh from route.params
+  const [cardsData, setCardsData] = useState([]);
 
-  const SampleFunction = () => {
+
+  const fetchData = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.get('http://172.27.39.25:5001/items', {
+        headers: {
+          Authorization: token,
+        },
+      });
+      setCardsData(response.data);
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Failed to fetch items. Please try again.');
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [email, refresh]); // Include refresh as dependency
+
+  const handleUploadButtonClick = () => {
     Alert.alert(`Floating Button Clicked ${email}`);
     navigation.navigate('Upload', {email});
+  };
+
+  const handleFilterApplied = filteredItems => {
+    setCardsData(filteredItems);
   };
 
   return (
     <View style={styles.container}>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
         <View style={styles.searchContainer}>
-          <Search />
+          <Search onFilterApplied={handleFilterApplied} />
+        </View>
+        <View>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            {cardsData.map((card, index) => (
+              <CustomCard
+                key={index}
+                title={`₹${card.price}`} // Assuming price needs rupee symbol
+                content={card.description}
+                imageSource={{uri: card.imageUrl}}
+                flag={card.flag}
+                email={email}
+                name={card.name}
+                quantity={card.quantity}
+                itemId={card._id}
+                onRefresh={fetchData} // Refresh data on card interaction
+                onPress={() =>
+                  navigation.navigate('OrderDetails_Page', {itemId: card._id})
+                }
+              />
+            ))}
+          </ScrollView>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={handleUploadButtonClick}
+            style={styles.TouchableOpacityStyle}>
+            <Image source={uploadIcon} style={styles.FloatingButtonStyle} />
+          </TouchableOpacity>
+
         </View>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {cardsData.map((card, index) => (
@@ -170,10 +128,10 @@ const styles = StyleSheet.create({
     // padding: 10,
     backgroundColor: '#0000cd', // Optional background for better visibility
     zIndex: 10,
-    paddingBottom:10,
+    paddingBottom: 10,
   },
   scrollContainer: {
-    paddingTop:70,
+    paddingTop: 70,
     marginBottom: 50,
     paddingHorizontal: 10,
     justifyContent: 'center',
@@ -189,12 +147,13 @@ const styles = StyleSheet.create({
     height: 70,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 20,
   },
-  floatingButtonImage: {
+  FloatingButtonStyle: {
     resizeMode: 'contain',
     width: 70,
     height: 70,
-    borderRadius: 35, // Make the button circular
+    borderRadius: 35,
   },
 });
 
