@@ -17,6 +17,13 @@ import {Upload} from './components/upload_item/upload_page.js';
 import {OrderDetails_Page} from './components/order page/order_details.js';
 import {Lost_and_Found_Details_Page} from './components/lost_and_found_details/lost_and_found_details.js';
 import {Lost_and_Found} from './components/drawer pages/lost_and_found.js';
+
+<!-- import {Lost_and_Found} from './components/drawer pages/lost_and_found.js';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {Upload} from './components/upload_item/upload_page.js';
+import {OrderDetails_Page} from './components/order page/order_details.js';
+import { Lost_and_Found_Details_Page } from './components/lost_and_found_details/lost_and_found_details.js'; -->
+
 //import { FilterPage } from './components/searchbar & filter/filterpage.js';
 
 const Drawer = createDrawerNavigator();

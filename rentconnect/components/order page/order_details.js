@@ -1,3 +1,4 @@
+
 import React, {useEffect, useState} from 'react';
 import {
   View,
@@ -99,7 +100,6 @@ export const OrderDetails_Page = ({route, navigation}) => {
   //         },
   //       },
   //     );
-
   //     if (response.status === 200) {
   //       Alert.alert('Success', 'Order placed successfully');
   //       navigation.navigate('Main_page', {refresh: true}); // Pass a refresh flag to update the Main Page
@@ -193,6 +193,7 @@ export const OrderDetails_Page = ({route, navigation}) => {
                 <Text style={styles.productName}>{item.name}</Text>
                 <Text style={styles.productPrice}>Price: ₹{item.price}</Text>
               </View>
+
               <Text style={styles.productQuantity}>
                 Quantity Available: {item.quantity}
               </Text>
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     elevation: 6,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
     marginTop: 0, // Adjust to overlap with card image
@@ -277,6 +278,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 20,
@@ -355,3 +357,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
