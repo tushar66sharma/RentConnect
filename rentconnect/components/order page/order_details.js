@@ -14,8 +14,12 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {NetworkInfo} from 'react-native-network-info';
-import RNUpiPayment from 'react-native-upi-payment';
+import {RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET} from '@env';
+import RazorpayCheckout from 'react-native-razorpay';
+// import {NetworkInfo} from 'react-native-network-info';
+const rid = RAZORPAY_KEY_ID;
+const sec = RAZORPAY_KEY_SECRET;
+
 const image = require('../../components/other/image3.jpg');
 const {height} = Dimensions.get('window'); // Get device height
 // const serverIpAddress = require('../../Backend/app');
@@ -34,7 +38,7 @@ export const OrderDetails_Page = ({route, navigation}) => {
       try {
         const token = await AsyncStorage.getItem('token');
         const response = await axios.get(
-          `http://172.27.39.25:5001/order-details/${itemId}`,
+          `http://192.168.181.172:5001/order-details/${itemId}`,
           {
             headers: {
               Authorization: token,
@@ -91,7 +95,7 @@ export const OrderDetails_Page = ({route, navigation}) => {
   //     const token = await AsyncStorage.getItem('token');
 
   //     const response = await axios.patch(
-  //       `http://172.27.39.25:5001/order/${itemId}/update`,
+  //       `http://192.168.181.172:5001/order/${itemId}/update`,
   //       {orderQuantity: quantity}, // Correct key names
   //       {
   //         headers: {
@@ -111,27 +115,55 @@ export const OrderDetails_Page = ({route, navigation}) => {
   //     Alert.alert('Error', 'Failed to place order. Please try again.');
   //   }
   // };
-
-  function successCallback(data) {
-    console.log('success', data);
-  }
-
-  function failureCallback(data) {
-    console.log('payment failed', data);
-  }
-
-  const handleOrderButtonClick = () => {
-    RNUpiPayment.initializePayment(
-      {
-        vpa: 'bvsharma31july@okicici', // or can be john@ybl or mobileNo@upi
-        payeeName: 'Bhavana Sharma',
-        amount: '1',
-        transactionRef: 'aasf-332-aoei-fn',
+  const currency = 'INR';
+  const amount = 100;
+  const handleOrderButtonClick = async () => {
+    var options = {
+      description: 'Credits towards consultation',
+      image: 'https://i.imgur.com/3g7nmJC.jpg',
+      currency: currency,
+      key: rid,
+      amount: amount * 100,
+      name: 'Acme Corp',
+      order_id: '', //Replace this with an order_id created using Orders API.
+      prefill: {
+        email: 'gaurav.kumar@example.com',
+        contact: '9191919191',
+        name: 'Gaurav Kumar',
       },
-      successCallback,
-      failureCallback,
-    );
+      theme: {color: '#53a20e'},
+    };
+    RazorpayCheckout.open(options)
+      .then(data => {
+        // handle success
+        alert(`Success: ${data.razorpay_payment_id}`);
+      })
+      .catch(error => {
+        // handle failure
+        alert(`Error: ${error.code} | ${error.description}`);
+      });
   };
+
+  // function successCallback(data) {
+  //   console.log('success', data);
+  // }
+
+  // function failureCallback(data) {
+  //   console.log('payment failed', data);
+  // }
+
+  // const handleOrderButtonClick = () => {
+  //   RNUpiPayment.initializePayment(
+  //     {
+  //       vpa: 'bvsharma31july@okicici', // or can be john@ybl or mobileNo@upi
+  //       payeeName: 'Bhavana Sharma',
+  //       amount: '1',
+  //       transactionRef: 'aasf-332-aoei-fn',
+  //     },
+  //     successCallback,
+  //     failureCallback,
+  //   );
+  // };
 
   if (loading) {
     return (

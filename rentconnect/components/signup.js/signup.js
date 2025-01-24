@@ -44,7 +44,7 @@ export const Signup = () => {
       setErrors(newErrors);
     } else {
       axios
-        .post('http://172.27.39.25:5001/register', formData)
+        .post('http://192.168.181.172:5001/register', formData)
         .then(res => {
           console.log(res.data);
           if (res.data.status === 'ok') {
