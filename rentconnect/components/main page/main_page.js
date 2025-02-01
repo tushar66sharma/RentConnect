@@ -23,6 +23,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const image = require('../../components/other/image3.jpg');
 const uploadIcon = require('../../components/other/upload_image5.png');
 
+
 export const Main_page = () => {
   const route = useRoute();
   const navigation = useNavigation();
@@ -30,6 +31,7 @@ export const Main_page = () => {
   const [cardsData, setCardsData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(null);
+
 
   const fetchData = async () => {
     try {
@@ -127,7 +129,28 @@ export const Main_page = () => {
             style={styles.TouchableOpacityStyle}>
             <Image source={uploadIcon} style={styles.FloatingButtonStyle} />
           </TouchableOpacity>
+
         </View>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {cardsData.map((card, index) => (
+            <CustomCard
+              key={index}
+              title={card.title}
+              content={card.content}
+              imageSource={card.imageSource}
+              flag={card.flag}
+              email={email}
+              name={card.name}
+              quantity={card.quantity}
+            />
+          ))}
+        </ScrollView>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={SampleFunction}
+          style={styles.floatingButton}>
+          <Image source={uploadIcon} style={styles.floatingButtonImage} />
+        </TouchableOpacity>
       </ImageBackground>
     </View>
   );
@@ -159,7 +182,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: 'row',
   },
-  TouchableOpacityStyle: {
+  floatingButton: {
     position: 'absolute',
     bottom: 40,
     right: 20,

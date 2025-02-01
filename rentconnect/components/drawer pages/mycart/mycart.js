@@ -40,6 +40,7 @@ export const Mycart = ({route}) => {
               tabBarLabel: 'Cart',
               tabBarIcon: ({color}) => (
                 <Image source={cartImage} style={styles.cartimage} />
+
               ),
             }}
           />

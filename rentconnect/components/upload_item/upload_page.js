@@ -67,7 +67,6 @@ export const Upload = ({route}) => {
       imageUrl: imageUri,
       owner: email, // assuming email is used as the owner identifier
     };
-
     try {
       const response = await axios.post(
         'http://192.168.181.172:5001/items',

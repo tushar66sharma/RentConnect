@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,10 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
+import { SendDirectSms } from 'react-native-send-direct-sms';
 
 interface CustomCardProps {
   id: string;

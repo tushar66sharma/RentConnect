@@ -1,3 +1,4 @@
+
 import React, {useEffect, useState} from 'react';
 import {
   View,
@@ -83,5 +84,21 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     color: 'white',
+//   TouchableOpacityStyle: {
+//     position: 'absolute',
+//     bottom: 40,
+//     right: 20,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     width: 70,
+//     height: 70,
+//   },
+
+//   FloatingButtonStyle: {
+//     resizeMode: 'contain',
+//     width: 70,
+//     height: 70,
+//     borderRadius: 50,
+// >>>>>>> main
   },
 });

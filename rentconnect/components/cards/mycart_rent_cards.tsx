@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,10 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
+import { SendDirectSms } from 'react-native-send-direct-sms';
 
 interface CustomCardProps {
   title: string;
@@ -24,6 +27,9 @@ interface CustomCardProps {
   quantity:number;
 }
 
+
+
+
 export const CustomCard2: React.FC<CustomCardProps> = ({
   title,
   content,
@@ -35,6 +41,52 @@ export const CustomCard2: React.FC<CustomCardProps> = ({
   quantity
 }) => {
 
+  const sellerdetails=[{
+    selleremail:"abc@iiitdmj.ac.in",
+    mobileNumber:'5554',
+  }];
+  const seller=sellerdetails[0];
+
+  const [mobileNumber, setMobileNumber] = React.useState('');
+  const [bodySMS, setBodySMS] = React.useState('');
+
+  useEffect(() => {
+    setMobileNumber(seller.mobileNumber);
+    setBodySMS("Item has been returned.... ");
+  }, [seller]);
+
+  const requestSmsPermission = async () => {
+    try {
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.SEND_SMS,
+          {
+            title: 'SMS Permission',
+            message: 'This app needs access to your SMS to send messages.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('SMS permission granted');
+          sendSmsData(mobileNumber, bodySMS);
+        } else {
+          console.log('SMS permission denied');
+        }
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+
+  function sendSmsData(mobileNumber: string, bodySMS: string) {
+    SendDirectSms(mobileNumber, bodySMS)
+      .then((res) => console.log("SMS sent successfully", res))
+      .catch((err) => console.error("Error sending SMS", err));
+  }
+
   const [expanded, setExpanded] = useState(false);
 
   const handleCardPress = () => {
@@ -44,6 +96,9 @@ export const CustomCard2: React.FC<CustomCardProps> = ({
 
   const handleView = () => {
     Alert.alert(`Item Returned......${email}`);
+    requestSmsPermission();
+    
+    
   };
 
 

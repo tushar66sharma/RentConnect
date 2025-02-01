@@ -96,7 +96,7 @@ export const  Settings = ({route}) => {
                 </TouchableOpacity>
               </View>
 
-              <View style={styles.rowWrapper}>
+              {/* <View style={styles.rowWrapper}>
                 <View style={styles.row}>
                   <View
                     style={[styles.rowIcon, { backgroundColor: '#007AFF' }]}>
@@ -116,7 +116,7 @@ export const  Settings = ({route}) => {
                     }
                     value={form.emailNotifications} />
                 </View>
-              </View>
+              </View> */}
 
               <View style={styles.rowWrapper}>
                 <TouchableOpacity

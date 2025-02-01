@@ -1,3 +1,4 @@
+
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -56,7 +57,6 @@ export const Lost_and_Found_Details_Page = ({route}) => {
     };
     fetchData();
   }, [itemId]);
-
   const requestSmsPermission = async () => {
     try {
       if (Platform.OS === 'android') {
@@ -97,6 +97,40 @@ export const Lost_and_Found_Details_Page = ({route}) => {
   if (!item || !user) {
     return <Text>Loading...</Text>;
   }
+//   const incrementQuantity = () => {
+//     if (quantity < availableQuantity) {
+//       setQuantity(quantity + 1);
+//       setWarning('');
+//     } else {
+//       setWarning('Quantity exceeds available stock');
+//     }
+//   };
+
+//   const decrementQuantity = () => {
+//     if (quantity > 1) {
+//       setQuantity(quantity - 1);
+//       setWarning('');
+//     } else {
+//       setWarning('Quantity cannot be less than 1');
+//     }
+//   };
+
+//   const handleQuantityChange = (value) => {
+//     const newQuantity = parseInt(value);
+//     if (!isNaN(newQuantity)) {
+//       if (newQuantity >= 1 && newQuantity <= availableQuantity) {
+//         setQuantity(newQuantity);
+//         setWarning('');
+//       } else if (newQuantity < 1) {
+//         setWarning('Quantity cannot be less than 1');
+//       } else {
+//         setWarning('Quantity exceeds available stock');
+//       }
+//     }
+//   };
+
+  // Assuming there's only one user data in the array
+  
 
   return (
     <View style={styles.container}>
@@ -104,6 +138,7 @@ export const Lost_and_Found_Details_Page = ({route}) => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.cardImageContainer}>
             <Image
+
               source={{uri: item.imageUrl}}
               style={styles.cardImage}
               resizeMode="cover"
@@ -130,6 +165,7 @@ export const Lost_and_Found_Details_Page = ({route}) => {
 
             <View style={styles.userDetails}>
               <Text style={styles.userTitle}>Person's Details</Text>
+
               <Text style={styles.userDetail}>Name: {user.name}</Text>
               <Text style={styles.userDetail}>Phone No: {user.mobileNo}</Text>
               <Text style={styles.userDetail}>Roll No: {user.rollNo}</Text>

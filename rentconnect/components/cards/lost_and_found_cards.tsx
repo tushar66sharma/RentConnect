@@ -44,6 +44,7 @@ interface CustomCardProps {
   name: string;
   quantity: number;
   itemId: string;
+
 }
 
 export const CustomCard3: React.FC<CustomCardProps> = ({
@@ -56,7 +57,7 @@ export const CustomCard3: React.FC<CustomCardProps> = ({
   name,
   quantity,
   itemId,
-}) => {
+} : CustomCardProps) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const handleView = () => {
@@ -72,7 +73,6 @@ export const CustomCard3: React.FC<CustomCardProps> = ({
       itemId,
     });
   };
-
   return (
     <View style={[styles.card, cardStyle]}>
       {imageSource && (
