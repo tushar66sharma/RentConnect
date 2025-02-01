@@ -69,7 +69,7 @@ export const Upload = ({route}) => {
     };
     try {
       const response = await axios.post(
-        'http://172.27.39.25:5001/items',
+        'http://192.168.179.241:5001/items',
         itemData,
         {
           headers: {

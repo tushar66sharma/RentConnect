@@ -29,7 +29,7 @@ export const Main_page = () => {
   const fetchData = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.get('http://172.27.39.25:5001/items', {
+      const response = await axios.get('http://192.168.179.241:5001/items', {
         headers: {
           Authorization: token,
         },

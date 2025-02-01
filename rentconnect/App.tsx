@@ -12,17 +12,17 @@ import {Main_page} from './components/main page/main_page.js';
 import {Signup} from './components/signup.js/signup.js';
 import {Settings} from './components/drawer pages/setting.js';
 import {Mycart} from './components/drawer pages/mycart/mycart.js';
-import {Notification} from './components/drawer pages/notifications.js';
+// import {Notification} from './components/drawer pages/notifications.js';
 import {Upload} from './components/upload_item/upload_page.js';
 import {OrderDetails_Page} from './components/order page/order_details.js';
 import {Lost_and_Found_Details_Page} from './components/lost_and_found_details/lost_and_found_details.js';
 import {Lost_and_Found} from './components/drawer pages/lost_and_found.js';
 
-<!-- import {Lost_and_Found} from './components/drawer pages/lost_and_found.js';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {Upload} from './components/upload_item/upload_page.js';
-import {OrderDetails_Page} from './components/order page/order_details.js';
-import { Lost_and_Found_Details_Page } from './components/lost_and_found_details/lost_and_found_details.js'; -->
+// import {Lost_and_Found} from './components/drawer pages/lost_and_found.js';
+// import {createDrawerNavigator} from '@react-navigation/drawer';
+// import {Upload} from './components/upload_item/upload_page.js';
+// import {OrderDetails_Page} from './components/order page/order_details.js';
+// import { Lost_and_Found_Details_Page } from './components/lost_and_found_details/lost_and_found_details.js';
 
 //import { FilterPage } from './components/searchbar & filter/filterpage.js';
 

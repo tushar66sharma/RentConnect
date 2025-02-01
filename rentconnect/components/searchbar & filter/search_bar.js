@@ -223,14 +223,14 @@ export const Search = ({onFilterApplied}) => {
       const token = await AsyncStorage.getItem('token');
       console.log(
         'Request URL:',
-        `http://172.27.39.25:5001/items/category/${filterName}`,
+        `http://192.168.179.241:5001/items/category/${filterName}`,
       );
       console.log('Request Headers:', {Authorization: token});
 
       let response;
 
       if (filterName === 'RemoveFilter') {
-        response = await axios.get('http://172.27.39.25:5001/items', {
+        response = await axios.get('http://192.168.179.241:5001/items', {
           headers: {
             Authorization: token,
           },
@@ -238,7 +238,7 @@ export const Search = ({onFilterApplied}) => {
         Alert.alert('Filter removed', 'All items are now visible');
       } else {
         response = await axios.get(
-          `http://172.27.39.25:5001/items/category/${filterName}`,
+          `http://192.168.179.241:5001/items/category/${filterName}`,
           {
             headers: {
               Authorization: token,
