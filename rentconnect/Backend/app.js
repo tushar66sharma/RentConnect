@@ -21,10 +21,11 @@ mongoose
 
 require('./userDetails');
 require('./item');
+require('./order');
 
 const User = mongoose.model('UserInfo');
 const Item = mongoose.model('ItemInfo');
-
+const Order = mongoose.model('OrderInfo');
 const authenticate = (req, res, next) => {
   const token = req.headers['authorization'];
   if (!token) {
@@ -39,7 +40,7 @@ const authenticate = (req, res, next) => {
   }
 };
 // const serverIpAddress = getIpAddress(); // Get the IP address
-// console.log(`Server IP Address: ${serverIpAddress}`);
+// console.log(Server IP Address: ${serverIpAddress});
 
 // // Export the IP address to use it in other files
 // module.exports = {serverIpAddress};
@@ -120,6 +121,46 @@ app.post('/items', authenticate, async (req, res) => {
   }
 });
 
+app.post('/orders', authenticate, async (req, res) => {
+  const {
+    name,
+    description,
+    category,
+    price,
+    quantity,
+    imageUrl,
+    orderId,
+    owner,
+    renter,
+  } = req.body;
+
+  try {
+    const buyerUser = await User.findById(renter);
+    const sellerUser = await User.findById(owner);
+
+    if (!buyerUser || !sellerUser) {
+      return res.status(404).json({message: 'User not found'});
+    }
+
+    const order = new Order({
+      name,
+      description,
+      category,
+      price,
+      quantity,
+      imageUrl,
+      orderId,
+      owner: sellerUser._id, // Seller's ID
+      renter: buyerUser._id, // Buyer's ID
+    });
+
+    await order.save();
+    res.status(201).json(order);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({message: 'Error creating order'});
+  }
+});
 // app.get("/items", authenticate, async (req, res) => {
 //   try {
 //     const userId = req.user.id;
@@ -166,24 +207,6 @@ app.get('/order-details/:itemId', authenticate, async (req, res) => {
   }
 });
 
-// app.patch("/order/:itemId/flag", authenticate, async (req, res) => {
-//   const { itemId } = req.params;
-//   try {
-//     const item = await Item.findById(itemId);
-//     if (!item) {
-//       return res.status(404).send({ error: "Item not found" });
-//     }
-//     if (!item.flag) {
-//       return res.status(400).send({ error: "Item is unavailable" });
-//     }
-//     item.flag = false; // Set flag to false (unavailable)
-//     await item.save();
-//     res.send({ status: "success", message: "Order placed successfully" });
-//   } catch (error) {
-//     res.status(500).send({ error: error.message });
-//   }
-// });
-
 app.patch('/order/:itemId/update', authenticate, async (req, res) => {
   const {itemId} = req.params;
   const {orderQuantity} = req.body; // Correct extraction of orderQuantity and buyerId
@@ -214,6 +237,7 @@ app.patch('/order/:itemId/update', authenticate, async (req, res) => {
     res.status(500).send({error: 'Failed to update item'});
   }
 });
+
 app.delete('/withdraw/:itemId', authenticate, async (req, res) => {
   const {itemId} = req.params;
   try {
@@ -261,6 +285,23 @@ app.get('/order-details/email/:email', async (req, res) => {
   } catch (error) {
     console.error(error); // Log the error for debugging
     res.status(500).json({message: 'Internal server error'});
+  }
+});
+
+app.get('/fetchOrder', authenticate, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const orders = await Order.find({
+      $or: [
+        {renter: userId}, // Orders where user is the buyer
+        {owner: userId}, // Orders where user is the seller
+      ],
+    }).populate('owner renter'); // Populate both user references
+
+    res.json(orders);
+  } catch (error) {
+    res.status(500).send({message: error.message});
   }
 });
 

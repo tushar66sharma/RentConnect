@@ -101,6 +101,8 @@ export const CustomCard2: React.FC<CustomCardProps> = ({
     
   };
 
+
+  
   // const renderTextInput = () => {
   //   if (flag) {
   //     return (

@@ -22,11 +22,14 @@ export const Sale = ({route}) => {
     const fetchItems = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
-        const response = await axios.get('http://172.27.39.25:5001/itemsSale', {
-          headers: {
-            Authorization: token,
+        const response = await axios.get(
+          'http://192.168.181.172:5001/itemsSale',
+          {
+            headers: {
+              Authorization: token,
+            },
           },
-        });
+        );
         setCardsData(response.data);
       } catch (error) {
         console.error('Error fetching items:', error);
@@ -38,31 +41,10 @@ export const Sale = ({route}) => {
     fetchItems();
   }, [email, refresh]);
 
-  // const handleWithdraw = async id => {
-  //   try {
-  //     const token = await AsyncStorage.getItem('token');
-  //     await axios.patch(
-  //       `http://192.168.242.172:5001/withdraw/${id}`,
-  //       {flag: false},
-  //       {
-  //         headers: {
-  //           Authorization: token,
-  //         },
-  //       },
-  //     );
-  //     setCardsData(prevCards =>
-  //       prevCards.map(card =>
-  //         card._id === id ? {...card, flag: false} : card,
-  //       ),
-  //     );
-  //   } catch (error) {
-  //     console.error('Error updating item flag:', error);
-  //   }
-  // };
   const handleWithdraw = async id => {
     try {
       const token = await AsyncStorage.getItem('token');
-      await axios.delete(`http://172.27.39.25:5001/withdraw/${id}`, {
+      await axios.delete(`http://192.168.181.172:5001/withdraw/${id}`, {
         headers: {
           Authorization: token,
         },

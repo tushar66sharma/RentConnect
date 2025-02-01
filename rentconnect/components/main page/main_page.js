@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,13 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  RefreshControl,
 } from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {
+  useNavigation,
+  useRoute,
+  useFocusEffect,
+} from '@react-navigation/native';
 import {CustomCard} from '../cards/main_page_cards';
 import {Search} from '../searchbar & filter/search_bar';
 import axios from 'axios';
@@ -22,8 +27,10 @@ const uploadIcon = require('../../components/other/upload_image5.png');
 export const Main_page = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const {email, refresh} = route.params || {}; // Destructure email and refresh from route.params
+  const {email} = route.params || {};
   const [cardsData, setCardsData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [lastRefresh, setLastRefresh] = useState(null);
 
 
   const fetchData = async () => {
@@ -41,12 +48,44 @@ export const Main_page = () => {
     }
   };
 
+  // Check for global refresh timestamp
+  const checkForRefresh = async () => {
+    try {
+      const storedTimestamp = await AsyncStorage.getItem(
+        'lastRefreshTimestamp',
+      );
+      if (storedTimestamp && storedTimestamp !== lastRefresh) {
+        setLastRefresh(storedTimestamp);
+        await fetchData();
+      }
+    } catch (error) {
+      console.error('Error checking refresh timestamp:', error);
+    }
+  };
+
+  // Handle pull-to-refresh
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await fetchData();
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
+
+  // Initial data fetch
   useEffect(() => {
     fetchData();
-  }, [email, refresh]); // Include refresh as dependency
+  }, []);
+
+  // Check for refresh when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      checkForRefresh();
+    }, [lastRefresh]),
+  );
 
   const handleUploadButtonClick = () => {
-    Alert.alert(`Floating Button Clicked ${email}`);
     navigation.navigate('Upload', {email});
   };
 
@@ -61,11 +100,15 @@ export const Main_page = () => {
           <Search onFilterApplied={handleFilterApplied} />
         </View>
         <View>
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
             {cardsData.map((card, index) => (
               <CustomCard
                 key={index}
-                title={`₹${card.price}`} // Assuming price needs rupee symbol
+                title={`₹${card.price}`}
                 content={card.description}
                 imageSource={{uri: card.imageUrl}}
                 flag={card.flag}
@@ -73,7 +116,7 @@ export const Main_page = () => {
                 name={card.name}
                 quantity={card.quantity}
                 itemId={card._id}
-                onRefresh={fetchData} // Refresh data on card interaction
+                onRefresh={fetchData}
                 onPress={() =>
                   navigation.navigate('OrderDetails_Page', {itemId: card._id})
                 }
