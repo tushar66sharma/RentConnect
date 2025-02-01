@@ -41,27 +41,6 @@ export const Sale = ({route}) => {
     fetchItems();
   }, [email, refresh]);
 
-  // const handleWithdraw = async id => {
-  //   try {
-  //     const token = await AsyncStorage.getItem('token');
-  //     await axios.patch(
-  //       `http://192.168.242.172:5001/withdraw/${id}`,
-  //       {flag: false},
-  //       {
-  //         headers: {
-  //           Authorization: token,
-  //         },
-  //       },
-  //     );
-  //     setCardsData(prevCards =>
-  //       prevCards.map(card =>
-  //         card._id === id ? {...card, flag: false} : card,
-  //       ),
-  //     );
-  //   } catch (error) {
-  //     console.error('Error updating item flag:', error);
-  //   }
-  // };
   const handleWithdraw = async id => {
     try {
       const token = await AsyncStorage.getItem('token');

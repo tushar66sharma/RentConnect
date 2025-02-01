@@ -46,6 +46,8 @@ export const CustomCard2: React.FC<CustomCardProps> = ({
     Alert.alert(`Item Returned......${email}`);
   };
 
+
+  
   // const renderTextInput = () => {
   //   if (flag) {
   //     return (
