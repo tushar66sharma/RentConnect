@@ -39,7 +39,7 @@ export const Lost_and_Found_Details_Page = ({route}) => {
       try {
         const token = await AsyncStorage.getItem('token');
         const response = await axios.get(
-          `http://172.27.39.25:5001/order-details/${itemId}`,
+          `http://192.168.181.172:5001/order-details/${itemId}`,
           {
             headers: {
               Authorization: token,
